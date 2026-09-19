@@ -1,0 +1,143 @@
+{
+  "experiment": "honest lambda evaluation (tune/eval split)",
+  "dataset": "hellaswag",
+  "split": "validation (full)",
+  "val_examples": 10042,
+  "tune_size": 5000,
+  "eval_size": 5042,
+  "split_definition": "first 5000 = tune, remaining 5042 = eval (deterministic)",
+  "config": {
+    "store": "checkpoints/memory_store_full_v2.pkl",
+    "target": "correct_ending",
+    "use_tangent": true,
+    "retrieval_k": 10,
+    "fuse_top_k": 3,
+    "scoring": "cos(ending, ctx) + lambda_nav * cos(ending, nav_vector)",
+    "position_moved": false
+  },
+  "tune": {
+    "lambdas": [
+      {
+        "lambda_nav": 0.0,
+        "accuracy": 0.329
+      },
+      {
+        "lambda_nav": 0.1,
+        "accuracy": 0.3288
+      },
+      {
+        "lambda_nav": 0.2,
+        "accuracy": 0.3318
+      },
+      {
+        "lambda_nav": 0.25,
+        "accuracy": 0.3324
+      },
+      {
+        "lambda_nav": 0.3,
+        "accuracy": 0.3326
+      },
+      {
+        "lambda_nav": 0.5,
+        "accuracy": 0.3334
+      },
+      {
+        "lambda_nav": 1.0,
+        "accuracy": 0.3244
+      }
+    ],
+    "best_lambda": 0.5,
+    "best_lambda_tune_accuracy": 0.3334
+  },
+  "eval": {
+    "no_navigation": {
+      "accuracy": 0.2973026576755256,
+      "correct": 1499
+    },
+    "gmn": {
+      "lambda_nav": 0.5,
+      "accuracy": 0.28579928599762,
+      "correct": 1441,
+      "delta_vs_no_navigation": -0.011503371677905605,
+      "delta_vs_gpt2": 0.029750099166997224
+    },
+    "gpt2_small": {
+      "accuracy": 0.2560491868306228,
+      "params": 124439808
+    }
+  },
+  "lambda_is_untunable": true,
+  "no_navigation_beats_gpt2_significantly": true,
+  "mcnemar": {
+    "gmn_vs_no_navigation": {
+      "first": "gmn_lambda_0.5",
+      "second": "no_navigation",
+      "gmn_lambda_0.5_correct_no_navigation_wrong": 436,
+      "gmn_lambda_0.5_wrong_no_navigation_correct": 494,
+      "discordant_pairs": 930,
+      "mcnemar_p_value": 0.06155027554378273,
+      "significant_at_0.05": false
+    },
+    "gmn_vs_gpt2_small": {
+      "first": "gmn_lambda_0.5",
+      "second": "gpt2_small",
+      "gmn_lambda_0.5_correct_gpt2_small_wrong": 1074,
+      "gmn_lambda_0.5_wrong_gpt2_small_correct": 924,
+      "discordant_pairs": 1998,
+      "mcnemar_p_value": 0.0008535553801210406,
+      "significant_at_0.05": true
+    },
+    "no_navigation_vs_gpt2_small": {
+      "first": "no_navigation",
+      "second": "gpt2_small",
+      "no_navigation_correct_gpt2_small_wrong": 1111,
+      "no_navigation_wrong_gpt2_small_correct": 903,
+      "discordant_pairs": 2014,
+      "mcnemar_p_value": 3.903986243282442e-06,
+      "significant_at_0.05": true
+    }
+  },
+  "post_hoc_leaky_eval_sweep": {
+    "note": "Diagnostic only - these lambdas were NOT chosen honestly. Included to show the size of the optimistic bias the tune/eval split removes.",
+    "rows": [
+      {
+        "lambda_nav": 0.0,
+        "eval_accuracy": 0.2973026576755256
+      },
+      {
+        "lambda_nav": 0.1,
+        "eval_accuracy": 0.29849266164220545
+      },
+      {
+        "lambda_nav": 0.2,
+        "eval_accuracy": 0.2969059896866323
+      },
+      {
+        "lambda_nav": 0.25,
+        "eval_accuracy": 0.29750099166997224
+      },
+      {
+        "lambda_nav": 0.3,
+        "eval_accuracy": 0.2971043236810789
+      },
+      {
+        "lambda_nav": 0.5,
+        "eval_accuracy": 0.28579928599762
+      },
+      {
+        "lambda_nav": 1.0,
+        "eval_accuracy": 0.2635858786195954
+      }
+    ],
+    "best_if_lambda_chosen_on_eval": {
+      "lambda_nav": 0.1,
+      "eval_accuracy": 0.29849266164220545
+    },
+    "optimistic_bias_points": 0.012693375644585447
+  },
+  "navigation_helps_significantly": false,
+  "gmn_beats_gpt2_significantly": true,
+  "gmn_parameters": 624256,
+  "gpt2_parameters": 124439808,
+  "caveat": "Paper number: lambda was chosen on the first 5,000 examples and this accuracy is measured only on the remaining 5,041."
+}

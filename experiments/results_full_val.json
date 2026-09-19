@@ -1,0 +1,96 @@
+{
+  "experiment": "full validation comparison (n=10,042)",
+  "dataset": "hellaswag",
+  "split": "validation (full)",
+  "val_examples": 10042,
+  "subset_size": 500,
+  "seed": 42,
+  "gmn_config": {
+    "store": "checkpoints/memory_store_full.pkl",
+    "store_size": 39905,
+    "scoring": "cosine(L2(encode(ending)), navigated position)",
+    "classifier_head": "none",
+    "retrieval_k": 10,
+    "fuse_top_k": 3
+  },
+  "table": [
+    {
+      "condition": "no_navigation",
+      "accuracy_n500": 0.376,
+      "accuracy_full": 0.31308504282015537,
+      "delta": -0.06291495717984463
+    },
+    {
+      "condition": "full_model",
+      "accuracy_n500": 0.336,
+      "accuracy_full": 0.27753435570603463,
+      "delta": -0.05846564429396539
+    },
+    {
+      "condition": "gpt2_small",
+      "accuracy_n500": 0.35,
+      "accuracy_full": 0.28579964150567616,
+      "delta": -0.06420035849432382
+    }
+  ],
+  "conditions": {
+    "full_model": {
+      "accuracy": 0.27753435570603463,
+      "accuracy_n500": 0.336,
+      "correct": 2787,
+      "num_examples": 10042,
+      "seconds": 13.732501599995885,
+      "ms_per_example": 1.3675066321445812
+    },
+    "no_navigation": {
+      "accuracy": 0.31308504282015537,
+      "accuracy_n500": 0.376,
+      "correct": 3144,
+      "num_examples": 10042,
+      "seconds": 0.08199879998574033,
+      "ms_per_example": 0.00816558454349137
+    }
+  },
+  "gpt2_small": {
+    "accuracy": 0.28579964150567616,
+    "accuracy_length_normalized": 0.2954590718980283,
+    "params": 124439808,
+    "model_name": "gpt2",
+    "seconds": 3234.827939799987
+  },
+  "mcnemar": {
+    "no_navigation_vs_full_model": {
+      "first": "no_navigation",
+      "second": "full_model",
+      "no_navigation_correct_full_model_wrong": 1827,
+      "no_navigation_wrong_full_model_correct": 1470,
+      "discordant_pairs": 3297,
+      "mcnemar_p_value": 5.439329992837879e-10,
+      "significant_at_0.05": true
+    },
+    "no_navigation_vs_gpt2_small": {
+      "first": "no_navigation",
+      "second": "gpt2_small",
+      "no_navigation_correct_gpt2_small_wrong": 2226,
+      "no_navigation_wrong_gpt2_small_correct": 1952,
+      "discordant_pairs": 4178,
+      "mcnemar_p_value": 2.3896372741382064e-05,
+      "significant_at_0.05": true
+    },
+    "full_model_vs_gpt2_small": {
+      "first": "full_model",
+      "second": "gpt2_small",
+      "full_model_correct_gpt2_small_wrong": 1956,
+      "full_model_wrong_gpt2_small_correct": 2039,
+      "discordant_pairs": 3995,
+      "mcnemar_p_value": 0.1945061741364073,
+      "significant_at_0.05": false
+    }
+  },
+  "unpaired_std_error_points": 0.4468449634260702,
+  "gpt2_pending": false,
+  "notes": {
+    "n500_subset": "data/val.json is the first 500 rows of the full split",
+    "encoding": "vectors cached by scripts/precompute_val_full_vectors.py using the same per-example batch shapes as score_example"
+  }
+}

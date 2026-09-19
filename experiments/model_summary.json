@@ -1,0 +1,147 @@
+{
+  "experiment": "TASK 11 model summary",
+  "checkpoint": "checkpoints/vae.pt",
+  "config": {
+    "base_model_name": "sentence-transformers/all-MiniLM-L6-v2",
+    "base_embed_dim": 384,
+    "head_hidden_dim": 512,
+    "latent_dim": 256,
+    "decoder_hidden_dim": 256,
+    "kl_weight": 0.001,
+    "kl_warmup_epochs": 4,
+    "logvar_bias": -6.0
+  },
+  "components": [
+    {
+      "component": "Base encoder (frozen)",
+      "parameters": 22713216,
+      "notes": "excluded from GMN count"
+    },
+    {
+      "component": "VAE head",
+      "parameters": 459776,
+      "notes": "trained"
+    },
+    {
+      "component": "VAE decoder",
+      "parameters": 164480,
+      "notes": "trained"
+    },
+    {
+      "component": "ClassifierHead",
+      "parameters": 164740,
+      "notes": "superseded, not used"
+    },
+    {
+      "component": "Total GMN (inference)",
+      "parameters": 624256,
+      "notes": "VAE head + decoder only"
+    },
+    {
+      "component": "GPT-2 small",
+      "parameters": 124439808,
+      "notes": "baseline"
+    }
+  ],
+  "counts": {
+    "base_encoder_frozen": 22713216,
+    "base_encoder_is_frozen": true,
+    "base_encoder_loaded": true,
+    "vae_head": 459776,
+    "vae_decoder": 164480,
+    "classifier_head": 164740,
+    "classifier_head_used_at_inference": false,
+    "classifier_checkpoint_present": true,
+    "retrieval_index_learned_parameters": 0
+  },
+  "gmn_inference_parameters": 624256,
+  "gpt2_parameters": 124439808,
+  "gmn_fraction_of_gpt2": 0.005016529758708725,
+  "parameter_reduction_factor": 199.34098831248718,
+  "target_under_10m": true,
+  "breakdown": {
+    "vae_head": [
+      {
+        "tensor": "head.fc.weight",
+        "shape": [
+          512,
+          384
+        ],
+        "parameters": 196608
+      },
+      {
+        "tensor": "head.fc.bias",
+        "shape": [
+          512
+        ],
+        "parameters": 512
+      },
+      {
+        "tensor": "head.mu_layer.weight",
+        "shape": [
+          256,
+          512
+        ],
+        "parameters": 131072
+      },
+      {
+        "tensor": "head.mu_layer.bias",
+        "shape": [
+          256
+        ],
+        "parameters": 256
+      },
+      {
+        "tensor": "head.logvar_layer.weight",
+        "shape": [
+          256,
+          512
+        ],
+        "parameters": 131072
+      },
+      {
+        "tensor": "head.logvar_layer.bias",
+        "shape": [
+          256
+        ],
+        "parameters": 256
+      }
+    ],
+    "vae_decoder": [
+      {
+        "tensor": "decoder.fc1.weight",
+        "shape": [
+          256,
+          256
+        ],
+        "parameters": 65536
+      },
+      {
+        "tensor": "decoder.fc1.bias",
+        "shape": [
+          256
+        ],
+        "parameters": 256
+      },
+      {
+        "tensor": "decoder.fc2.weight",
+        "shape": [
+          384,
+          256
+        ],
+        "parameters": 98304
+      },
+      {
+        "tensor": "decoder.fc2.bias",
+        "shape": [
+          384
+        ],
+        "parameters": 384
+      }
+    ]
+  },
+  "notes": {
+    "gmn_definition": "VAEHead + VAEDecoder. The base sentence encoder is frozen and excluded; the FAISS memory store holds stored vectors and has no learned parameters.",
+    "source": "counts read from checkpoints/vae.pt model_state_dict so they cannot drift from the shipped checkpoint"
+  }
+}

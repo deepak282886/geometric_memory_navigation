@@ -1,0 +1,160 @@
+{
+  "experiment": "ablations (redesigned around what is actually ablatable)",
+  "dataset": "hellaswag",
+  "split": "validation",
+  "val_examples": 500,
+  "seed": 42,
+  "config": {
+    "store": "checkpoints/memory_store_full.pkl",
+    "store_size": 39905,
+    "scoring": "cosine(L2(encode(ending)), navigated position)",
+    "classifier_head": "none",
+    "retrieval_k": 10,
+    "fuse_top_k": 3,
+    "outcome_weights_at_inference": 1.0
+  },
+  "full_model_accuracy": 0.336,
+  "full_model_reproduces_reference": true,
+  "table": [
+    {
+      "ablation": "no_navigation",
+      "accuracy": 0.376,
+      "delta_vs_full": 0.03999999999999998,
+      "meaningful": false,
+      "mcnemar_p_value": 0.09525341143251784,
+      "discordant_pairs": 130,
+      "significant_vs_full": false
+    },
+    {
+      "ablation": "random_fusion",
+      "accuracy": 0.316,
+      "delta_vs_full": -0.020000000000000018,
+      "meaningful": false,
+      "mcnemar_p_value": 0.3583976321916263,
+      "discordant_pairs": 96,
+      "significant_vs_full": false
+    },
+    {
+      "ablation": "uniform_weights",
+      "accuracy": 0.336,
+      "delta_vs_full": 0.0,
+      "meaningful": false,
+      "mcnemar_p_value": 1.0,
+      "discordant_pairs": 0,
+      "significant_vs_full": false
+    },
+    {
+      "ablation": "single_neighbor",
+      "accuracy": 0.35,
+      "delta_vs_full": 0.013999999999999957,
+      "meaningful": false,
+      "mcnemar_p_value": 0.5154257318839007,
+      "discordant_pairs": 85,
+      "significant_vs_full": false
+    },
+    {
+      "ablation": "full_model",
+      "accuracy": 0.336,
+      "delta_vs_full": 0.0,
+      "meaningful": false,
+      "mcnemar_p_value": null,
+      "discordant_pairs": null,
+      "significant_vs_full": false
+    }
+  ],
+  "ablations": {
+    "no_navigation": {
+      "accuracy": 0.376,
+      "delta_vs_full": 0.03999999999999998,
+      "correct": 188,
+      "num_examples": 500,
+      "seconds": 0.002232500002719462,
+      "ms_per_example": 0.004465000005438924
+    },
+    "random_fusion": {
+      "accuracy": 0.316,
+      "delta_vs_full": -0.020000000000000018,
+      "correct": 158,
+      "num_examples": 500,
+      "seconds": 0.6518654000246897,
+      "ms_per_example": 1.3037308000493795
+    },
+    "uniform_weights": {
+      "accuracy": 0.336,
+      "delta_vs_full": 0.0,
+      "correct": 168,
+      "num_examples": 500,
+      "seconds": 0.659835500002373,
+      "ms_per_example": 1.319671000004746
+    },
+    "single_neighbor": {
+      "accuracy": 0.35,
+      "delta_vs_full": 0.013999999999999957,
+      "correct": 175,
+      "num_examples": 500,
+      "seconds": 0.6038471000210848,
+      "ms_per_example": 1.2076942000421695
+    },
+    "full_model": {
+      "accuracy": 0.336,
+      "delta_vs_full": 0.0,
+      "correct": 168,
+      "num_examples": 500,
+      "seconds": 0.659835500002373,
+      "ms_per_example": 1.319671000004746
+    }
+  },
+  "analysis": {
+    "biggest_drop": "random_fusion",
+    "biggest_drop_delta": -0.020000000000000018,
+    "biggest_gain": "no_navigation",
+    "biggest_gain_delta": 0.03999999999999998,
+    "navigation_helps": false,
+    "significant_ablations": [],
+    "significance_test": "McNemar exact test against full_model, p < 0.05",
+    "unpaired_std_error_points": 2.112363605064242
+  },
+  "paired_significance": {
+    "no_navigation": {
+      "full_correct_ablation_wrong": 55,
+      "full_wrong_ablation_correct": 75,
+      "discordant_pairs": 130,
+      "mcnemar_p_value": 0.09525341143251784,
+      "significant_at_0.05": false
+    },
+    "random_fusion": {
+      "full_correct_ablation_wrong": 53,
+      "full_wrong_ablation_correct": 43,
+      "discordant_pairs": 96,
+      "mcnemar_p_value": 0.3583976321916263,
+      "significant_at_0.05": false
+    },
+    "uniform_weights": {
+      "full_correct_ablation_wrong": 0,
+      "full_wrong_ablation_correct": 0,
+      "discordant_pairs": 0,
+      "mcnemar_p_value": 1.0,
+      "significant_at_0.05": false
+    },
+    "single_neighbor": {
+      "full_correct_ablation_wrong": 39,
+      "full_wrong_ablation_correct": 46,
+      "discordant_pairs": 85,
+      "mcnemar_p_value": 0.5154257318839007,
+      "significant_at_0.05": false
+    }
+  },
+  "notes": {
+    "uniform_weights": "No-op ablation. With geometric scoring there is no trained head and outcome weights at inference are always 1.0, so it is reported at the full-model number with this explanation rather than as a measured delta.",
+    "k_sweep": "Varying k is not a valid ablation: k is inert for k >= top_k (3). Accuracy was identical (33.6%) at k=5, 10, 20 and 50 on the full store.",
+    "random_fusion": "3 neighbours chosen uniformly at random (seed 42, without replacement) and fused with the same renormalised weighting; only the selection differs from the full model.",
+    "no_navigation": "Retrieval skipped; navigate() receives concat([query_vector, zeros(256)]), so endings are scored against the raw query position.",
+    "single_neighbor": "fuse_directions(top_k=1): follow only the strongest memory."
+  },
+  "architectural_findings": {
+    "k_inert": "k is inert for k >= top_k (=3). Accuracy identical from k=3 to k=100. Navigation direction determined by top-3 regardless of retrieval pool size.",
+    "outcome_weights": "Geometric scoring uses no trained head, so outcome weights at inference are always 1.0. Training-time outcome weighting was superseded by the architecture change in Task 8.",
+    "hyperedge_bonus": "Not implemented. Left for future work.",
+    "navigation_direction": "Measured, not assumed: removing navigation entirely (no_navigation) scores 37.6% vs the full model's 33.6% (delta +4.0%, McNemar p=0.0953). Moving the position toward the retrieved-memory neighbourhood does not help on this task; the strongest single geometric signal is the cosine similarity between the candidate ending and the context position itself."
+  }
+}

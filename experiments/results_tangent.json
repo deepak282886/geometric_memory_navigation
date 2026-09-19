@@ -1,0 +1,151 @@
+{
+  "experiment": "tangent navigation (radial component removed before fusion)",
+  "dataset": "hellaswag",
+  "split": "validation (full)",
+  "val_examples": 10042,
+  "seed": 42,
+  "config": {
+    "store": "checkpoints/memory_store_full.pkl",
+    "store_size": 39905,
+    "retrieval_k": 10,
+    "fuse_top_k": 3,
+    "scoring": "cosine(L2(encode(ending)), L2(ctx + fuse_directions(..., use_tangent=True, query_vector=ctx)))",
+    "fix": "tangent_direction: d - (d.q) q, renormalised"
+  },
+  "table": [
+    {
+      "condition": "no_navigation",
+      "accuracy": 0.31308504282015537,
+      "source": "cached"
+    },
+    {
+      "condition": "full_model (chord)",
+      "accuracy": 0.27753435570603463,
+      "source": "cached"
+    },
+    {
+      "condition": "full_model (tangent)",
+      "accuracy": 0.2896833300139414,
+      "source": "computed now"
+    },
+    {
+      "condition": "GPT-2 small",
+      "accuracy": 0.28579964150567616,
+      "source": "cached"
+    }
+  ],
+  "conditions": {
+    "no_navigation": {
+      "accuracy": 0.31308504282015537,
+      "source": "cached"
+    },
+    "full_model_chord": {
+      "accuracy": 0.27753435570603463,
+      "source": "cached"
+    },
+    "full_model_tangent": {
+      "accuracy": 0.2896833300139414,
+      "correct": 2909,
+      "num_examples": 10042,
+      "seconds": 12.965161300002364,
+      "ms_per_example": 1.2910479585749524
+    },
+    "gpt2_small": {
+      "accuracy": 0.28579964150567616,
+      "params": 124439808,
+      "source": "cached"
+    }
+  },
+  "mcnemar": {
+    "tangent_vs_no_navigation": {
+      "first": "tangent",
+      "second": "no_navigation",
+      "tangent_correct_no_navigation_wrong": 1218,
+      "tangent_wrong_no_navigation_correct": 1453,
+      "discordant_pairs": 2671,
+      "mcnemar_p_value": 5.885107039276725e-06,
+      "significant_at_0.05": true
+    },
+    "tangent_vs_chord": {
+      "first": "tangent",
+      "second": "chord",
+      "tangent_correct_chord_wrong": 451,
+      "tangent_wrong_chord_correct": 329,
+      "discordant_pairs": 780,
+      "mcnemar_p_value": 1.4196951619737794e-05,
+      "significant_at_0.05": true
+    },
+    "tangent_vs_gpt2_small": {
+      "first": "tangent",
+      "second": "gpt2_small",
+      "tangent_correct_gpt2_small_wrong": 2043,
+      "tangent_wrong_gpt2_small_correct": 2004,
+      "discordant_pairs": 4047,
+      "mcnemar_p_value": 0.5502899137720214,
+      "significant_at_0.05": false
+    }
+  },
+  "tangent_beats_no_navigation": false,
+  "tangent_beats_chord": true,
+  "tangent_beats_gpt2_small": false,
+  "diagnosis": {
+    "file": "experiments/navigation_diagnosis_tangent.json",
+    "summary": {
+      "mean_score_correct_ctx": 0.644573126055102,
+      "mean_score_correct_navigated": 0.5500903918254586,
+      "mean_score_change": -0.09448273422964337,
+      "improved": 51,
+      "hurt": 55,
+      "unchanged": 94,
+      "net_correct_change": -4,
+      "accuracy_without_navigation": 0.325,
+      "accuracy_with_navigation": 0.27,
+      "neighbour_slots": 600,
+      "neighbour_same_activity": 148,
+      "neighbour_same_activity_pct": 24.666666666666668,
+      "examples_with_any_matching_neighbour": 75,
+      "mean_nav_norm": 1.0,
+      "mean_cos_ctx_nav": 1.4053207070513062e-09,
+      "mean_neighbour_similarity_mu": 0.7395136084556581,
+      "chord_prediction_cos_ctx_nav": -0.3608922218227638,
+      "mean_incorrect_score_ctx": 0.6250788173264397,
+      "mean_incorrect_score_navigated": 0.5423383160288161,
+      "score_gap_ctx": 0.019494308728662313,
+      "score_gap_navigated": 0.007752075796642499
+    },
+    "chord_reference": {
+      "mean_score_correct_navigated": 0.4519,
+      "score_gap_navigated": 0.0031,
+      "improved": 59,
+      "hurt": 65
+    },
+    "expectations": {
+      "cos_ctx_nav_is_zero": {
+        "value": 1.4053207070513062e-09,
+        "target": "~0.0  (chord was -0.4486)",
+        "passed": true
+      },
+      "mean_score_correct_beats_chord": {
+        "value": 0.5500903918254586,
+        "target": "> 0.4519",
+        "passed": true
+      },
+      "score_gap_beats_chord": {
+        "value": 0.007752075796642499,
+        "target": "> 0.0031",
+        "passed": true
+      },
+      "improved_beats_chord": {
+        "value": 51,
+        "target": "> 59",
+        "passed": false
+      },
+      "hurt_below_chord": {
+        "value": 55,
+        "target": "< 65",
+        "passed": true
+      }
+    },
+    "all_expectations_passed": false
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "experiment": "full training-set memory store",
+  "dataset": "hellaswag",
+  "split": "validation",
+  "val_examples": 500,
+  "seed": 42,
+  "gmn_config": {
+    "scoring": "cosine(L2(encode(ending)), L2(query_vector + nav_vector))",
+    "classifier_head": "none",
+    "fuse_top_k": 3,
+    "outcome_weights_at_inference": 1.0
+  },
+  "stores": {
+    "baseline_2000": {
+      "store_size": 2000,
+      "k": 10,
+      "accuracy": 0.31,
+      "source": "experiments/results.json (TASK 8)"
+    },
+    "full": {
+      "store_size": 39905,
+      "source": "checkpoints/memory_store_full.pkl",
+      "k_sweep": {
+        "5": {
+          "accuracy": 0.336,
+          "seconds": 15.383164899976691,
+          "ms_per_example": 30.766329799953382,
+          "required": false
+        },
+        "10": {
+          "accuracy": 0.336,
+          "seconds": 15.692671199998586,
+          "ms_per_example": 31.38534239999717,
+          "required": true
+        },
+        "20": {
+          "accuracy": 0.336,
+          "seconds": 15.982817399984924,
+          "ms_per_example": 31.96563479996985,
+          "required": true
+        },
+        "50": {
+          "accuracy": 0.336,
+          "seconds": 17.767529000004288,
+          "ms_per_example": 35.535058000008576,
+          "required": false
+        }
+      },
+      "best_required": {
+        "k": 10,
+        "accuracy": 0.336
+      },
+      "best_overall": {
+        "k": 5,
+        "accuracy": 0.336
+      }
+    }
+  },
+  "gpt2_small_accuracy": 0.35,
+  "full_store_beats_2000_store": true,
+  "full_store_beats_gpt2": false,
+  "decision": "between the two thresholds - your call"
+}

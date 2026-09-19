@@ -1,0 +1,179 @@
+{
+  "experiment": "continuation navigation (correct-ending target)",
+  "dataset": "hellaswag",
+  "split": "validation (full)",
+  "val_examples": 10042,
+  "seed": 42,
+  "config": {
+    "store": "checkpoints/memory_store_full_v2.pkl",
+    "store_size": 39905,
+    "store_has_correct_ending_vectors": true,
+    "retrieval_k": 10,
+    "fuse_top_k": 3,
+    "use_tangent": true,
+    "target": "correct_ending",
+    "scoring": "cosine(L2(encode(ending)), L2(ctx + fuse_directions(..., use_tangent=True, query_vector=ctx)))"
+  },
+  "table": [
+    {
+      "condition": "no_navigation",
+      "accuracy": 0.31308504282015537,
+      "source": "cached"
+    },
+    {
+      "condition": "chord navigation (ctx target)",
+      "accuracy": 0.27753435570603463,
+      "source": "cached"
+    },
+    {
+      "condition": "tangent navigation (ctx target)",
+      "accuracy": 0.2896833300139414,
+      "source": "recomputed"
+    },
+    {
+      "condition": "continuation navigation (ce target)",
+      "accuracy": 0.2938657637920733,
+      "source": "computed now"
+    },
+    {
+      "condition": "GPT-2 small",
+      "accuracy": 0.28579964150567616,
+      "source": "cached"
+    }
+  ],
+  "conditions": {
+    "no_navigation": {
+      "accuracy": 0.31308504282015537,
+      "source": "cached"
+    },
+    "chord_navigation_ctx_target": {
+      "accuracy": 0.27753435570603463,
+      "source": "cached"
+    },
+    "tangent_navigation_ctx_target": {
+      "accuracy": 0.2896833300139414,
+      "correct": 2909,
+      "seconds": 15.083366300008493,
+      "source": "recomputed (matches results_tangent.json)"
+    },
+    "continuation_navigation_ce_target": {
+      "accuracy": 0.2938657637920733,
+      "correct": 2951,
+      "num_examples": 10042,
+      "seconds": 16.035715799982427,
+      "ms_per_example": 1.5968098685526921
+    },
+    "gpt2_small": {
+      "accuracy": 0.28579964150567616,
+      "params": 124439808,
+      "source": "cached"
+    }
+  },
+  "mcnemar": {
+    "continuation_vs_no_navigation": {
+      "first": "continuation",
+      "second": "no_navigation",
+      "continuation_correct_no_navigation_wrong": 1287,
+      "continuation_wrong_no_navigation_correct": 1480,
+      "discordant_pairs": 2767,
+      "mcnemar_p_value": 0.0002608260624914543,
+      "significant_at_0.05": true
+    },
+    "continuation_vs_tangent": {
+      "first": "continuation",
+      "second": "tangent",
+      "continuation_correct_tangent_wrong": 1186,
+      "continuation_wrong_tangent_correct": 1144,
+      "discordant_pairs": 2330,
+      "mcnemar_p_value": 0.3956703899863366,
+      "significant_at_0.05": false
+    },
+    "continuation_vs_gpt2_small": {
+      "first": "continuation",
+      "second": "gpt2_small",
+      "continuation_correct_gpt2_small_wrong": 2072,
+      "continuation_wrong_gpt2_small_correct": 1991,
+      "discordant_pairs": 4063,
+      "mcnemar_p_value": 0.20944941760102825,
+      "significant_at_0.05": false
+    }
+  },
+  "continuation_beats_no_navigation": false,
+  "continuation_beats_tangent": false,
+  "continuation_beats_gpt2_small": false,
+  "diagnosis": {
+    "file": "experiments/navigation_diagnosis_continuation.json",
+    "summary": {
+      "mean_score_correct_ctx": 0.644573126055102,
+      "mean_score_correct_navigated": 0.6102601397600305,
+      "mean_score_change": -0.03431298629507151,
+      "improved": 55,
+      "hurt": 52,
+      "unchanged": 93,
+      "net_correct_change": 3,
+      "accuracy_without_navigation": 0.325,
+      "accuracy_with_navigation": 0.32,
+      "neighbour_slots": 600,
+      "neighbour_same_activity": 146,
+      "neighbour_same_activity_pct": 24.333333333333332,
+      "examples_with_any_matching_neighbour": 73,
+      "mean_nav_norm": 1.0,
+      "mean_cos_ctx_nav": 2.046701499686804e-09,
+      "mean_neighbour_similarity_mu": 0.7395136099457741,
+      "chord_prediction_cos_ctx_nav": -0.3608922207905193,
+      "mean_incorrect_score_ctx": 0.6250788173264397,
+      "mean_incorrect_score_navigated": 0.5943611235247173,
+      "score_gap_ctx": 0.019494308728662313,
+      "score_gap_navigated": 0.0158990162353132
+    },
+    "tangent_reference": {
+      "mean_score_correct_navigated": 0.5501,
+      "score_gap_navigated": 0.0078,
+      "improved": 51,
+      "hurt": 55,
+      "mean_cos_ctx_nav": 0.0
+    },
+    "expectations": {
+      "cos_ctx_nav_positive": {
+        "value": 2.046701499686804e-09,
+        "target": "> 0.0  (tangent was exactly 0.0)",
+        "passed": true,
+        "note": "NOT ACHIEVABLE with use_tangent=True: the tangent projection is precisely the operation that zeroes this cosine. A positive value would require keeping a radial component, i.e. undoing the fix."
+      },
+      "mean_score_correct_beats_tangent": {
+        "value": 0.6102601397600305,
+        "target": "> 0.5501",
+        "passed": true
+      },
+      "score_gap_beats_tangent": {
+        "value": 0.0158990162353132,
+        "target": "> 0.0078",
+        "passed": true
+      },
+      "improved_beats_tangent": {
+        "value": 55,
+        "target": "> 51",
+        "passed": true
+      },
+      "hurt_below_tangent": {
+        "value": 52,
+        "target": "< 55",
+        "passed": true
+      }
+    },
+    "expectations_passed": [
+      "cos_ctx_nav_positive",
+      "mean_score_correct_beats_tangent",
+      "score_gap_beats_tangent",
+      "improved_beats_tangent",
+      "hurt_below_tangent"
+    ],
+    "expectations_failed": []
+  },
+  "gap_progression": {
+    "no_navigation_ctx_only": 0.0195,
+    "chord_ctx_target": 0.0031,
+    "tangent_ctx_target": 0.0078,
+    "continuation_target": 0.0158990162353132
+  }
+}

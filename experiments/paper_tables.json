@@ -1,0 +1,127 @@
+{
+  "experiment": "TASK 12 paper tables",
+  "sources": {
+    "honest": "experiments/results_honest.json",
+    "full_validation": "experiments/results_full_val.json",
+    "tangent": "experiments/results_tangent.json",
+    "continuation": "experiments/results_continuation.json",
+    "additive": "experiments/results_additive.json",
+    "random_baseline": "experiments/results.json",
+    "parameters": "experiments/model_summary.json",
+    "diagnoses": [
+      "experiments/navigation_diagnosis.json",
+      "experiments/navigation_diagnosis_tangent.json",
+      "experiments/navigation_diagnosis_continuation.json"
+    ]
+  },
+  "tables": {
+    "tab:main": {
+      "label": "tab:main",
+      "eval_examples": 5042,
+      "rows": [
+        {
+          "model": "Random baseline",
+          "parameters": null,
+          "accuracy": 0.25,
+          "p_vs_gpt2": null,
+          "note": "chance level for a 4-way choice"
+        },
+        {
+          "model": "GPT-2 small",
+          "parameters": 124439808,
+          "accuracy": 0.2560491868306228,
+          "p_vs_gpt2": null,
+          "note": "baseline"
+        },
+        {
+          "model": "GMN (geometric scoring)",
+          "parameters": 624256,
+          "accuracy": 0.2973026576755256,
+          "p_vs_gpt2": 3.903986243282442e-06,
+          "note": "context cosine only, no navigation"
+        },
+        {
+          "model": "GMN + navigation (lambda=0.50)",
+          "parameters": 624256,
+          "accuracy": 0.28579928599762,
+          "p_vs_gpt2": 0.0008535553801210406,
+          "note": "navigation vs no-navigation p = 0.0616"
+        }
+      ],
+      "mcnemar": {
+        "no_navigation_vs_gpt2_small": 3.903986243282442e-06,
+        "gmn_vs_gpt2_small": 0.0008535553801210406,
+        "gmn_vs_no_navigation": 0.06155027554378273
+      },
+      "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{lccc}\n\\toprule\nModel & Parameters & Accuracy & $p$ vs GPT-2 \\\\\n\\midrule\nRandom baseline & -- & 25.0\\% & -- \\\\\nGPT-2 small & 124M & 25.6\\% & baseline \\\\\n\\midrule\nGMN (geometric scoring) & 0.62M & \\textbf{29.7\\%} & $<0.001$ \\\\\nGMN + navigation ($\\lambda=0.50$) & 0.62M & 28.6\\% & $<0.001$ \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Accuracy on the HellaSwag held-out evaluation set (5{,}042 examples). $\\lambda$ was tuned on a disjoint 5{,}000-example split, so the navigation row is not fitted to the reported set. GMN uses geometric ending scoring; navigation adds no significant benefit ($p=0.0616$ against the no-navigation baseline). All $p$-values are exact McNemar tests paired on the same 5{,}042 examples. Random is chance level for a 4-way choice (measured 25.8\\% on the 500-example subset).}\n\\label{tab:main}\n\\end{table}"
+    },
+    "tab:ablation": {
+      "label": "tab:ablation",
+      "panels": {
+        "full_validation": {
+          "eval_examples": 10042,
+          "baseline": 0.31308504282015537,
+          "rows": [
+            {
+              "variant": "No navigation (context cosine)",
+              "eval_examples": 10042,
+              "accuracy": 0.31308504282015537,
+              "delta_vs_no_navigation": 0.0,
+              "p_vs_no_navigation": null,
+              "note": "baseline for the full validation set"
+            },
+            {
+              "variant": "Chord navigation",
+              "eval_examples": 10042,
+              "accuracy": 0.27753435570603463,
+              "delta_vs_no_navigation": -0.03555068711412074,
+              "p_vs_no_navigation": 5.439329992837879e-10,
+              "note": "memory - context, never tangent-corrected"
+            },
+            {
+              "variant": "Tangent navigation (ctx target)",
+              "eval_examples": 10042,
+              "accuracy": 0.2896833300139414,
+              "delta_vs_no_navigation": -0.023401712806213948,
+              "p_vs_no_navigation": 5.885107039276725e-06,
+              "note": "radial component removed"
+            },
+            {
+              "variant": "Tangent navigation (continuation target)",
+              "eval_examples": 10042,
+              "accuracy": 0.2938657637920733,
+              "delta_vs_no_navigation": -0.01921927902808207,
+              "p_vs_no_navigation": 0.0002608260624914543,
+              "note": "correct-ending vectors as targets"
+            }
+          ]
+        },
+        "honest_eval": {
+          "eval_examples": 5042,
+          "baseline": 0.2973026576755256,
+          "rows": [
+            {
+              "variant": "No navigation (context cosine)",
+              "eval_examples": 5042,
+              "accuracy": 0.2973026576755256,
+              "delta_vs_no_navigation": 0.0,
+              "p_vs_no_navigation": null,
+              "note": "baseline for the honest sub-split"
+            },
+            {
+              "variant": "Additive (lambda=0.50, honest)",
+              "eval_examples": 5042,
+              "accuracy": 0.28579928599762,
+              "delta_vs_no_navigation": -0.011503371677905605,
+              "p_vs_no_navigation": 0.06155027554378273,
+              "note": "ctx + lambda * nav, lambda tuned on a disjoint split"
+            }
+          ]
+        }
+      },
+      "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{llccl}\n\\toprule\nNavigation variant & Eval set & Accuracy & vs no-nav & $p$ vs no-nav \\\\\n\\midrule\nNo navigation (context cosine) & 10{,}042 & \\textbf{31.3\\%} & baseline & -- \\\\\nChord navigation & 10{,}042 & 27.8\\% & $-3.6$ & $<0.001$ \\\\\nTangent navigation (ctx target) & 10{,}042 & 29.0\\% & $-2.3$ & $<0.001$ \\\\\nTangent navigation (continuation target) & 10{,}042 & 29.4\\% & $-1.9$ & $<0.001$ \\\\\n\\midrule\nNo navigation (context cosine) & 5{,}042 & \\textbf{29.7\\%} & baseline & -- \\\\\nAdditive ($\\lambda$=0.50, honest) & 5{,}042 & 28.6\\% & $-1.2$ & 0.0616 \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Navigation ablation, reported as two panels because the variants were measured on different sets: chord/tangent/continuation on the full validation set (10{,}042 examples, baseline 31.3\\%), and the additive model on the honest sub-split (5{,}042 examples, baseline 29.7\\%). Rows are comparable within a panel but not across the midrule. Chord navigation significantly degrades accuracy; both geometric fixes recover part of the loss, yet every navigated variant stays significantly worse than context-only scoring. No variant significantly outperforms it.}\n\\label{tab:ablation}\n\\end{table}"
+    }
+  },
+  "key_findings_file": "paper/findings.md",
+  "latex_file": "paper/results_table.tex"
+}

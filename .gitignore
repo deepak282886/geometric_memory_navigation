@@ -1,0 +1,20 @@
+# Environment / secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Large / regenerable artifacts (recreate via scripts/)
+data/
+checkpoints/
+wandb/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
