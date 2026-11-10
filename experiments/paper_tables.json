@@ -1,5 +1,5 @@
 {
-  "experiment": "TASK 12 paper tables",
+  "experiment": "TASK 12 + TASK 17 paper tables",
   "sources": {
     "honest": "experiments/results_honest.json",
     "full_validation": "experiments/results_full_val.json",
@@ -12,12 +12,21 @@
       "experiments/navigation_diagnosis.json",
       "experiments/navigation_diagnosis_tangent.json",
       "experiments/navigation_diagnosis_continuation.json"
-    ]
+    ],
+    "clip_extended": "experiments/results_clip_extended.json",
+    "clip": "experiments/results_clip.json",
+    "structure_comparison": "experiments/results_structure_comparison.json",
+    "structure_geometry": "experiments/structured_geometry_v2.json",
+    "predictions": [
+      "experiments/gmn_full_val_predictions.json",
+      "experiments/gpt2_val_full_predictions.json"
+    ],
+    "labels": "data/val_full.json"
   },
   "tables": {
     "tab:main": {
       "label": "tab:main",
-      "eval_examples": 5042,
+      "eval_examples": 10042,
       "rows": [
         {
           "model": "Random baseline",
@@ -29,31 +38,56 @@
         {
           "model": "GPT-2 small",
           "parameters": 124439808,
-          "accuracy": 0.2560491868306228,
+          "accuracy": 0.28579964150567616,
           "p_vs_gpt2": null,
           "note": "baseline"
         },
         {
-          "model": "GMN (geometric scoring)",
+          "model": "GMN original VAE (no navigation)",
           "parameters": 624256,
-          "accuracy": 0.2973026576755256,
-          "p_vs_gpt2": 3.903986243282442e-06,
-          "note": "context cosine only, no navigation"
+          "accuracy": 0.31308504282015537,
+          "p_vs_gpt2": 2.3896372741382064e-05,
+          "note": "reconstruction + KL only, geometric ending scoring"
         },
         {
-          "model": "GMN + navigation (lambda=0.50)",
+          "model": "GMN CLIP-style (T=0.10)",
           "parameters": 624256,
-          "accuracy": 0.28579928599762,
-          "p_vs_gpt2": 0.0008535553801210406,
-          "note": "navigation vs no-navigation p = 0.0616"
+          "accuracy": 0.32433778131846247,
+          "p_vs_gpt2": 2.552458801822961e-09,
+          "note": "head fine-tuned on the task; best-observed 32.6% at T=0.07 (post-hoc)"
         }
       ],
       "mcnemar": {
-        "no_navigation_vs_gpt2_small": 3.903986243282442e-06,
-        "gmn_vs_gpt2_small": 0.0008535553801210406,
-        "gmn_vs_no_navigation": 0.06155027554378273
+        "original_vs_gpt2_small": 2.3896372741382064e-05,
+        "clip_prereg_vs_gpt2_small": 2.552458801822961e-09,
+        "clip_prereg_vs_original": 0.003373932910086136,
+        "clip_best_observed_vs_original": 0.0010133890637471295,
+        "clip_prereg_vs_clip_5ep": 0.06989139265724743
       },
-      "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{lccc}\n\\toprule\nModel & Parameters & Accuracy & $p$ vs GPT-2 \\\\\n\\midrule\nRandom baseline & -- & 25.0\\% & -- \\\\\nGPT-2 small & 124M & 25.6\\% & baseline \\\\\n\\midrule\nGMN (geometric scoring) & 0.62M & \\textbf{29.7\\%} & $<0.001$ \\\\\nGMN + navigation ($\\lambda=0.50$) & 0.62M & 28.6\\% & $<0.001$ \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Accuracy on the HellaSwag held-out evaluation set (5{,}042 examples). $\\lambda$ was tuned on a disjoint 5{,}000-example split, so the navigation row is not fitted to the reported set. GMN uses geometric ending scoring; navigation adds no significant benefit ($p=0.0616$ against the no-navigation baseline). All $p$-values are exact McNemar tests paired on the same 5{,}042 examples. Random is chance level for a 4-way choice (measured 25.8\\% on the 500-example subset).}\n\\label{tab:main}\n\\end{table}"
+      "clip": {
+        "preregistered": {
+          "tag": "T0.10",
+          "temperature": 0.1,
+          "epochs": 10,
+          "batch_size": 32,
+          "accuracy": 0.32433778131846247,
+          "best_val_500": 0.42,
+          "best_val_500_epoch": 6,
+          "p_vs_gpt2": 2.552458801822961e-09,
+          "p_vs_original": 0.003373932910086136,
+          "p_vs_clip5": 0.06989139265724743
+        },
+        "best_observed": {
+          "tag": "T0.07",
+          "temperature": 0.07,
+          "epochs": 10,
+          "accuracy": 0.3256323441545509,
+          "best_val_500": 0.416,
+          "best_val_500_epoch": 6,
+          "p_vs_original": 0.0010133890637471295
+        }
+      },
+      "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{lccc}\n\\toprule\nModel & Parameters & Accuracy & $p$ vs GPT-2 \\\\\n\\midrule\nRandom baseline & -- & 25.0\\% & -- \\\\\nGPT-2 small & 124M & 28.6\\% & baseline \\\\\n\\midrule\nGMN original VAE (no navigation) & 0.62M & 31.3\\% & $<0.001$ \\\\\nGMN CLIP-style ($T=0.10$) & 0.62M & \\textbf{32.4\\%}$^*$ & $<0.001$ \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Accuracy on the full HellaSwag validation set (10{,}042 examples; chance level 25.0\\%, measured 25.8\\% on the 500-example subset). Both GMN rows use geometric ending scoring with 624{,}256 trainable parameters - 199$\\times$ fewer than GPT-2 small. The CLIP-style model fine-tunes the VAE head directly on the 4-way scoring objective and improves on the reconstruction-trained VAE by +1.1 points (p = 0.0034). $^*$The temperature was chosen by a 500-example validation rule fixed before the sweep, so 32.4\\% is the pre-registered number; the best-observed value is 32.6\\% at $T=0.07$ (p = 0.0010 against the original VAE), selected post hoc on this same set and therefore optimistic. All $p$-values are exact McNemar tests paired on the same 10{,}042 examples.}\n\\label{tab:main}\n\\end{table}"
     },
     "tab:ablation": {
       "label": "tab:ablation",
@@ -120,8 +154,93 @@
         }
       },
       "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{llccl}\n\\toprule\nNavigation variant & Eval set & Accuracy & vs no-nav & $p$ vs no-nav \\\\\n\\midrule\nNo navigation (context cosine) & 10{,}042 & \\textbf{31.3\\%} & baseline & -- \\\\\nChord navigation & 10{,}042 & 27.8\\% & $-3.6$ & $<0.001$ \\\\\nTangent navigation (ctx target) & 10{,}042 & 29.0\\% & $-2.3$ & $<0.001$ \\\\\nTangent navigation (continuation target) & 10{,}042 & 29.4\\% & $-1.9$ & $<0.001$ \\\\\n\\midrule\nNo navigation (context cosine) & 5{,}042 & \\textbf{29.7\\%} & baseline & -- \\\\\nAdditive ($\\lambda$=0.50, honest) & 5{,}042 & 28.6\\% & $-1.2$ & 0.0616 \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Navigation ablation, reported as two panels because the variants were measured on different sets: chord/tangent/continuation on the full validation set (10{,}042 examples, baseline 31.3\\%), and the additive model on the honest sub-split (5{,}042 examples, baseline 29.7\\%). Rows are comparable within a panel but not across the midrule. Chord navigation significantly degrades accuracy; both geometric fixes recover part of the loss, yet every navigated variant stays significantly worse than context-only scoring. No variant significantly outperforms it.}\n\\label{tab:ablation}\n\\end{table}"
+    },
+    "tab:structure": {
+      "label": "tab:structure",
+      "eval_examples": 10042,
+      "rows": [
+        {
+          "method": "Original VAE",
+          "vae_training": "Reconstruction + KL",
+          "accuracy": 0.31308504282015537,
+          "delta_vs_original": 0.0,
+          "p_vs_original": null,
+          "note": "baseline",
+          "post_hoc": false
+        },
+        {
+          "method": "Margin ranking (margin=0.3)",
+          "vae_training": "+ Margin ranking loss",
+          "accuracy": 0.31876120294762,
+          "delta_vs_original": 0.005676160127464636,
+          "p_vs_original": 0.3082709921339949,
+          "note": "gap grew but accuracy did not",
+          "post_hoc": false
+        },
+        {
+          "method": "CLIP-style (T=0.10)",
+          "vae_training": "Task fine-tuning (4-way CE)",
+          "accuracy": 0.32433778131846247,
+          "delta_vs_original": 0.011252738498307102,
+          "p_vs_original": 0.003373932910086136,
+          "note": "pre-registered configuration",
+          "post_hoc": false
+        },
+        {
+          "method": "CLIP-style (T=0.07)",
+          "vae_training": "Task fine-tuning (4-way CE)",
+          "accuracy": 0.3256323441545509,
+          "delta_vs_original": 0.012547301334395522,
+          "p_vs_original": 0.0010133890637471295,
+          "note": "post-hoc temperature selection",
+          "post_hoc": true
+        },
+        {
+          "method": "GPT-2 small",
+          "vae_training": "Autoregressive LM",
+          "accuracy": 0.28579964150567616,
+          "delta_vs_original": -0.027285401314479207,
+          "p_vs_original": null,
+          "note": "not fine-tuned on HellaSwag",
+          "post_hoc": false
+        }
+      ],
+      "gap_inversion": [
+        {
+          "model": "Original VAE (recon + KL)",
+          "val_gap": 0.027404862798394047,
+          "accuracy": 0.31308504282015537
+        },
+        {
+          "model": "Margin ranking (v2, margin=0.5)",
+          "val_gap": 0.05301386117935181,
+          "accuracy": 0.3136825333598885
+        },
+        {
+          "model": "Margin ranking (v3, margin=0.3)",
+          "val_gap": 0.04744729399681091,
+          "accuracy": 0.31876120294762
+        },
+        {
+          "model": "CLIP-style (5 epochs)",
+          "val_gap": 0.007136285305023193,
+          "accuracy": 0.321449910376419
+        },
+        {
+          "model": "CLIP-style (T=0.07, best observed)",
+          "val_gap": 0.007511913776397705,
+          "accuracy": 0.3256323441545509
+        },
+        {
+          "model": "CLIP-style (T=0.10, pre-registered)",
+          "val_gap": 0.010769307613372803,
+          "accuracy": 0.32433778131846247
+        }
+      ],
+      "latex": "\\begin{table}[h]\n\\centering\n\\begin{tabular}{llcc}\n\\toprule\nMethod & VAE training & Accuracy & vs original \\\\\n\\midrule\nOriginal VAE & Reconstruction + KL & 31.3\\% & baseline \\\\\nMargin ranking (margin=0.3) & + Margin ranking loss & 31.9\\% & $+0.6$ ($p=0.3083$) (n.s.) \\\\\nCLIP-style ($T=0.10$) & Task fine-tuning (4-way CE) & 32.4\\% & $+1.1$ ($p=0.0034$) \\\\\nCLIP-style ($T=0.07$) & Task fine-tuning (4-way CE) & \\textbf{32.6\\%}$^*$ & $+1.3$ ($p=0.0010$) \\\\\nGPT-2 small & Autoregressive LM & 28.6\\% & $-2.7$ \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Effect of the VAE training objective on geometric ending scoring, all rows on the full 10{,}042-example validation set so the deltas are same-set. Every GMN variant shares the same 624{,}256 trainable parameters and the same frozen sentence encoder; only the training objective changes. Adding a margin-ranking loss to reconstruction widens the correct-vs-wrong cosine gap (0.027 $\\to$ 0.047) but buys nothing (p = 0.3083). Training the head end-to-end on the 4-way scoring objective is the first change that helps (+1.1 points, p = 0.0034), while producing by far the \\emph{smallest} cosine gap (0.007): the gap is not what carries the signal. $^*$post-hoc temperature selection on this same set; the pre-registered configuration is the row above. `n.s.' marks $p\\ge0.05$.}\n\\label{tab:structure}\n\\end{table}"
     }
   },
   "key_findings_file": "paper/findings.md",
+  "project_summary_file": "paper/project_summary.md",
   "latex_file": "paper/results_table.tex"
 }

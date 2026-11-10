@@ -1,0 +1,390 @@
+{
+  "task": "STEP 0 result - memory sweep comparison across encoders",
+  "largest_memory_size": 38330,
+  "encoders": {
+    "Original (vae.pt), all 7666 pairs": {
+      "history": "\\experiments\\predictor_history.json",
+      "encoder_checkpoint": "\\checkpoints\\vae.pt",
+      "sweep": {
+        "sizes": [
+          0,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          38330
+        ],
+        "losses": [
+          0.4097048044204712,
+          0.41628074645996094,
+          0.4149038791656494,
+          0.41499584913253784,
+          0.41241535544395447,
+          0.41508734226226807,
+          0.4015718996524811
+        ],
+        "cosines": [
+          0.5902951955795288,
+          0.5837192535400391,
+          0.5850961208343506,
+          0.5850040912628174,
+          0.5875846147537231,
+          0.5849126577377319,
+          0.5984280705451965
+        ],
+        "paired_delta_vs_memoryless": [
+          null,
+          -0.00657595501979813,
+          -0.0051991091459058225,
+          -0.005291087814839557,
+          -0.002710571978241205,
+          -0.005382543313317001,
+          0.008132865856168792
+        ],
+        "paired_t_vs_memoryless": [
+          null,
+          -8.77893701732447,
+          -7.232884424897188,
+          -7.0849895552474615,
+          -3.4978748269431366,
+          -6.847461125630216,
+          10.232873259027091
+        ],
+        "non_increasing": false,
+        "strictly_decreasing": false,
+        "monotone_steps": 3,
+        "num_steps": 6,
+        "spearman_rho_size_vs_loss": -0.21428571428571427,
+        "memoryless_wins": 1,
+        "memoryless_comparisons": 6,
+        "first_to_last_loss": -0.008132904767990112,
+        "first_to_last_cos": 0.008132874965667725
+      },
+      "passes": [
+        {
+          "pass": 1,
+          "train_loss": 0.5033534394755489,
+          "eval_loss": 0.4611784517765045,
+          "eval_cos": 0.5388215780258179,
+          "top1_recall": 0.00013044612575006522,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 7666
+        },
+        {
+          "pass": 2,
+          "train_loss": 0.4552294225425904,
+          "eval_loss": 0.42984092235565186,
+          "eval_cos": 0.5701591372489929,
+          "top1_recall": 0.0003913383772501957,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 15332
+        },
+        {
+          "pass": 3,
+          "train_loss": 0.4233838682802296,
+          "eval_loss": 0.3989374339580536,
+          "eval_cos": 0.601062536239624,
+          "top1_recall": 0.0007826767545003914,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 22998
+        },
+        {
+          "pass": 4,
+          "train_loss": 0.39998180769673536,
+          "eval_loss": 0.3839043080806732,
+          "eval_cos": 0.6160956621170044,
+          "top1_recall": 0.0020871380120010435,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 30664
+        },
+        {
+          "pass": 5,
+          "train_loss": 0.3856221827924516,
+          "eval_loss": 0.37287187576293945,
+          "eval_cos": 0.6271280646324158,
+          "top1_recall": 0.0037829376467518913,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 38330
+        }
+      ],
+      "zero_context_cos": 0.6219625473022461,
+      "paired_vs_zero_context": {
+        "num_examples": 7666,
+        "mean_cos_a": 0.6271280646324158,
+        "mean_cos_b": 0.6219625473022461,
+        "mean_delta": 0.005165635151586924,
+        "median_delta": 0.0034241676330566406,
+        "delta_std": 0.02509489290553115,
+        "paired_t_statistic": 18.022821837553128,
+        "a_wins": 4459,
+        "b_wins": 3207,
+        "ties": 0,
+        "share_a_wins": 0.5816592747195408
+      },
+      "no_memory_predictor_cos": 0.6258636713027954,
+      "num_pairs": 7666,
+      "sweep_sample": 1024
+    },
+    "Continuation (vae_continuation.pt), all 7666 pairs": {
+      "history": "\\experiments\\predictor_history_continuation.json",
+      "encoder_checkpoint": "checkpoints\\vae_continuation.pt",
+      "sweep": {
+        "sizes": [
+          0,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          38330
+        ],
+        "losses": [
+          0.3510993719100952,
+          0.3663550615310669,
+          0.3583064377307892,
+          0.35933518409729004,
+          0.3542734384536743,
+          0.3557187616825104,
+          0.34418565034866333
+        ],
+        "cosines": [
+          0.6489006280899048,
+          0.6336449384689331,
+          0.6416935920715332,
+          0.64066481590271,
+          0.6457265615463257,
+          0.6442812085151672,
+          0.6558143496513367
+        ],
+        "paired_delta_vs_memoryless": [
+          null,
+          -0.015255682439601514,
+          -0.00720704752166057,
+          -0.008235805798904039,
+          -0.0031740584381623194,
+          -0.004619380037183873,
+          0.006913712924870197
+        ],
+        "paired_t_vs_memoryless": [
+          null,
+          -14.442600860501129,
+          -8.577772449983247,
+          -9.26161751601663,
+          -3.713273310531866,
+          -5.105977259508575,
+          7.253622522223671
+        ],
+        "non_increasing": false,
+        "strictly_decreasing": false,
+        "monotone_steps": 3,
+        "num_steps": 6,
+        "spearman_rho_size_vs_loss": -0.39285714285714285,
+        "memoryless_wins": 1,
+        "memoryless_comparisons": 6,
+        "first_to_last_loss": -0.006913721561431885,
+        "first_to_last_cos": 0.006913721561431885
+      },
+      "passes": [
+        {
+          "pass": 1,
+          "train_loss": 0.5726109644528814,
+          "eval_loss": 0.46073782444000244,
+          "eval_cos": 0.5392622351646423,
+          "top1_recall": 0.0007826767545003914,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 7666
+        },
+        {
+          "pass": 2,
+          "train_loss": 0.4496290272438523,
+          "eval_loss": 0.41121917963027954,
+          "eval_cos": 0.5887807607650757,
+          "top1_recall": 0.002217584137751109,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 15332
+        },
+        {
+          "pass": 3,
+          "train_loss": 0.4035967201375476,
+          "eval_loss": 0.385946661233902,
+          "eval_cos": 0.6140533685684204,
+          "top1_recall": 0.003913383772501957,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 22998
+        },
+        {
+          "pass": 4,
+          "train_loss": 0.38113584184565746,
+          "eval_loss": 0.3653266429901123,
+          "eval_cos": 0.6346734166145325,
+          "top1_recall": 0.006000521784503,
+          "top1_recall_excl_self": 0.00013044612575006522,
+          "memory_size": 30664
+        },
+        {
+          "pass": 5,
+          "train_loss": 0.3649012095975465,
+          "eval_loss": 0.351341187953949,
+          "eval_cos": 0.6486587524414062,
+          "top1_recall": 0.007304983042003652,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 38330
+        }
+      ],
+      "zero_context_cos": 0.6413869261741638,
+      "paired_vs_zero_context": {
+        "num_examples": 7666,
+        "mean_cos_a": 0.6486587524414062,
+        "mean_cos_b": 0.6413869261741638,
+        "mean_delta": 0.007271904656758297,
+        "median_delta": 0.005072206258773804,
+        "delta_std": 0.03417528189557305,
+        "paired_t_statistic": 18.630327014754517,
+        "a_wins": 4509,
+        "b_wins": 3157,
+        "ties": 0,
+        "share_a_wins": 0.5881815810070441
+      },
+      "no_memory_predictor_cos": 0.6437176465988159,
+      "num_pairs": 7666,
+      "sweep_sample": 1024
+    },
+    "Continuation held-out clean (vae_continuation_h6000.pt), pairs 6000+, 1666 pairs": {
+      "history": "\\experiments\\predictor_history_heldout.json",
+      "encoder_checkpoint": "checkpoints\\vae_continuation_h6000.pt",
+      "sweep": {
+        "sizes": [
+          0,
+          256,
+          512,
+          1024,
+          2048,
+          4096,
+          8330
+        ],
+        "losses": [
+          0.3805240988731384,
+          0.38819172978401184,
+          0.38716840744018555,
+          0.38245660066604614,
+          0.37699493765830994,
+          0.3765334486961365,
+          0.37646013498306274
+        ],
+        "cosines": [
+          0.6194759011268616,
+          0.6118083000183105,
+          0.6128315925598145,
+          0.6175433993339539,
+          0.6230050325393677,
+          0.6234664916992188,
+          0.6235398054122925
+        ],
+        "paired_delta_vs_memoryless": [
+          null,
+          -0.007667645637411624,
+          -0.006644328183028847,
+          -0.0019325196335557848,
+          0.0035291618551127613,
+          0.003990643686847761,
+          0.004063942877110094
+        ],
+        "paired_t_vs_memoryless": [
+          null,
+          -10.643550473797335,
+          -7.451785336736734,
+          -1.8700866170268404,
+          4.039895509680393,
+          4.525035072351225,
+          4.7148400128379855
+        ],
+        "non_increasing": false,
+        "strictly_decreasing": false,
+        "monotone_steps": 5,
+        "num_steps": 6,
+        "spearman_rho_size_vs_loss": -0.7857142857142857,
+        "memoryless_wins": 3,
+        "memoryless_comparisons": 6,
+        "first_to_last_loss": -0.004063963890075684,
+        "first_to_last_cos": 0.004063904285430908
+      },
+      "passes": [
+        {
+          "pass": 1,
+          "train_loss": 0.6036846157239408,
+          "eval_loss": 0.4633339047431946,
+          "eval_cos": 0.5366660952568054,
+          "top1_recall": 0.0006002400960384153,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 1666
+        },
+        {
+          "pass": 2,
+          "train_loss": 0.4644026834996236,
+          "eval_loss": 0.4483535587787628,
+          "eval_cos": 0.5516464114189148,
+          "top1_recall": 0.0006002400960384153,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 3332
+        },
+        {
+          "pass": 3,
+          "train_loss": 0.44998380209074446,
+          "eval_loss": 0.4321548342704773,
+          "eval_cos": 0.5678451061248779,
+          "top1_recall": 0.0006002400960384153,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 4998
+        },
+        {
+          "pass": 4,
+          "train_loss": 0.4310807722384761,
+          "eval_loss": 0.4074696898460388,
+          "eval_cos": 0.5925303101539612,
+          "top1_recall": 0.003001200480192077,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 6664
+        },
+        {
+          "pass": 5,
+          "train_loss": 0.4103161234314702,
+          "eval_loss": 0.3905380964279175,
+          "eval_cos": 0.6094618439674377,
+          "top1_recall": 0.003601440576230492,
+          "top1_recall_excl_self": 0.0,
+          "memory_size": 8330
+        }
+      ],
+      "zero_context_cos": 0.607062041759491,
+      "paired_vs_zero_context": {
+        "num_examples": 1666,
+        "mean_cos_a": 0.6094618439674377,
+        "mean_cos_b": 0.607062041759491,
+        "mean_delta": 0.0023998465089380095,
+        "median_delta": 0.0019672513008117676,
+        "delta_std": 0.02707490099302319,
+        "paired_t_statistic": 3.6178794103679643,
+        "a_wins": 902,
+        "b_wins": 764,
+        "ties": 0,
+        "share_a_wins": 0.5414165666266506
+      },
+      "no_memory_predictor_cos": 0.6264898777008057,
+      "num_pairs": 1666,
+      "sweep_sample": 1024
+    }
+  },
+  "verdict": {
+    "monotone_encoders": [],
+    "comparable_arms": [
+      "Original (vae.pt), all 7666 pairs",
+      "Continuation (vae_continuation.pt), all 7666 pairs"
+    ],
+    "non_comparable_arms": [
+      "Continuation held-out clean (vae_continuation_h6000.pt), pairs 6000+, 1666 pairs"
+    ],
+    "recommended_for_task_28": "Continuation (vae_continuation.pt), all 7666 pairs",
+    "rule": "prefer a monotone sweep, else the most negative rho(size, loss), tie-broken by the paired t-statistic against C = 0; only arms on the same pair count are ranked"
+  }
+}

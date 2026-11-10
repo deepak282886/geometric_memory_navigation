@@ -1,0 +1,161 @@
+{
+  "task": "TASK 29 diagnosis - neighbour relevance vs context alignment",
+  "config": {
+    "steps": 10000,
+    "num_regions": 256,
+    "probe_regions": 4,
+    "knn_k": 10,
+    "fuse_top_k": 3,
+    "train_sample": 500,
+    "eval_size": 500,
+    "seed": 42
+  },
+  "memory": {
+    "name": "regions",
+    "fitted": true,
+    "num_regions": 256,
+    "size": 9940,
+    "routed_size": 9940,
+    "pending_size": 0,
+    "base_capacity": 195,
+    "mean_outcome_weight": 0.5,
+    "region_refits": 1,
+    "queries": 1000,
+    "mean_probes_per_query": 4.0,
+    "visit_stats": {
+      "region_queries": 1000,
+      "visited_regions": 204,
+      "num_regions": 256,
+      "top_10pct_visit_share": 0.46,
+      "max_visits": 55,
+      "mean_visits_when_visited": 4.901960784313726,
+      "visit_entropy_nats": 4.78594369997964,
+      "effective_regions": 119.81437857573536
+    },
+    "detail_stats": {
+      "pearson_visits_size": 0.6416256064356065,
+      "quartiles": [
+        {
+          "quartile": 1,
+          "regions": 64,
+          "mean_visits": 0.1875,
+          "mean_size": 18.1875,
+          "mean_capacity": 28.8125
+        },
+        {
+          "quartile": 2,
+          "regions": 64,
+          "mean_visits": 1.375,
+          "mean_size": 28.265625,
+          "mean_capacity": 71.0625
+        },
+        {
+          "quartile": 3,
+          "regions": 64,
+          "mean_visits": 3.234375,
+          "mean_size": 35.5625,
+          "mean_capacity": 166.5625
+        },
+        {
+          "quartile": 4,
+          "regions": 64,
+          "mean_visits": 10.828125,
+          "mean_size": 73.296875,
+          "mean_capacity": 501.3125
+        }
+      ],
+      "sparse_regions": 256,
+      "detailed_regions": 0
+    }
+  },
+  "in_corpus": {
+    "neighbour_top1_similarity": {
+      "name": "top-1 neighbour cosine",
+      "num_queries": 500,
+      "mean": 0.7841703276634217,
+      "median": 0.7851718366146088,
+      "std": 0.0738328422333527,
+      "share_positive": 1.0,
+      "p10": 0.6907233417034149,
+      "p90": 0.8798546969890595
+    },
+    "neighbour_top10_similarity": {
+      "name": "top-10 neighbour cosine",
+      "num_queries": 500,
+      "mean": 0.7147810191214085,
+      "median": 0.716245898604393,
+      "std": 0.06771255878850892,
+      "share_positive": 1.0,
+      "p10": 0.6247104340791703,
+      "p90": 0.8015626287460327
+    },
+    "context_alignment": {
+      "name": "cos(C, true tangent direction)",
+      "num_queries": 500,
+      "mean": 0.30285108738260513,
+      "median": 0.31095137874141465,
+      "std": 0.20249667462913887,
+      "share_positive": 0.918,
+      "p10": 0.03226070820263234,
+      "p90": 0.5597595847058524
+    },
+    "prediction_delta": {
+      "name": "ARM A - ARM B cosine",
+      "num_queries": 500,
+      "mean": 0.003942362158827531,
+      "median": 0.0034338897185733908,
+      "std": 0.03581916327576179,
+      "share_positive": 0.552,
+      "p10": -0.03563246346770877,
+      "p90": 0.04557229701083048
+    }
+  },
+  "out_of_corpus": {
+    "neighbour_top1_similarity": {
+      "name": "top-1 neighbour cosine",
+      "num_queries": 500,
+      "mean": 0.7233033438920975,
+      "median": 0.7241270244121552,
+      "std": 0.05758205292975343,
+      "share_positive": 1.0,
+      "p10": 0.6512309789657593,
+      "p90": 0.7940672039985657
+    },
+    "neighbour_top10_similarity": {
+      "name": "top-10 neighbour cosine",
+      "num_queries": 500,
+      "mean": 0.6703782235980034,
+      "median": 0.6664791792631148,
+      "std": 0.058061750154746995,
+      "share_positive": 1.0,
+      "p10": 0.5955251955986023,
+      "p90": 0.7523450595140457
+    },
+    "context_alignment": {
+      "name": "cos(C, true tangent direction)",
+      "num_queries": 500,
+      "mean": 0.23869692181129762,
+      "median": 0.2435336881765112,
+      "std": 0.17690495176034637,
+      "share_positive": 0.904,
+      "p10": 0.002992098644521151,
+      "p90": 0.47825297767264835
+    },
+    "prediction_delta": {
+      "name": "ARM A - ARM B cosine",
+      "num_queries": 500,
+      "mean": -0.004899992897262098,
+      "median": -0.003769796082778498,
+      "std": 0.028007806909992237,
+      "share_positive": 0.418,
+      "p10": -0.037776750315242816,
+      "p90": 0.025016799586093798
+    }
+  },
+  "mechanism": {
+    "corr_alignment_delta": 0.5686160367513213,
+    "corr_neighbour_relevance_delta": 0.10967351677021661,
+    "pooled_queries": 1000,
+    "interpretation": "alignment is cos(fused context, true tangent direction to P_actual): a positive mean means the memory pointed the right way, a negative mean means it pointed away from the answer"
+  }
+}

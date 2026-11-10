@@ -1,0 +1,125 @@
+{
+  "task": "TASK 13 - structured VAE geometry check",
+  "structured_checkpoint": "checkpoints\\vae_structured.pt",
+  "original_checkpoint": "checkpoints\\vae.pt",
+  "val_file": "data\\val_full.json",
+  "num_examples": 500,
+  "margin": 0.5,
+  "label_distribution": [
+    132,
+    124,
+    124,
+    120
+  ],
+  "conventions": {
+    "ending_alone": "cos(mu(ctx), mu(ending)) - what src/eval/evaluate.py scores",
+    "ctx_plus_ending": "cos(mu(ctx), mu(ctx + ' ' + ending)) - TASK 2 training text"
+  },
+  "structured": {
+    "ending_alone": {
+      "mean_cos_correct": 0.3088012303989381,
+      "mean_cos_wrong_all3": 0.2057418261387696,
+      "gap_all3": 0.10305940426016849,
+      "cos_correct_std": 0.3019168166082471,
+      "gap_std": 0.31072157249953664,
+      "rank_counts": {
+        "1": 180,
+        "2": 128,
+        "3": 110,
+        "4": 82
+      },
+      "rank_percentages": {
+        "rank_1": 36.0,
+        "rank_2": 25.6,
+        "rank_3": 22.0,
+        "rank_4": 16.4
+      },
+      "rank1_accuracy": 0.36,
+      "rank1_correct": 180,
+      "num_examples": 500
+    },
+    "ctx_plus_ending": {
+      "mean_cos_correct": 0.8877656008154153,
+      "mean_cos_wrong_all3": 0.8677180831432343,
+      "gap_all3": 0.020047517672181048,
+      "cos_correct_std": 0.11296519699605469,
+      "gap_std": 0.09960837260809727,
+      "rank_counts": {
+        "1": 158,
+        "2": 146,
+        "3": 100,
+        "4": 96
+      },
+      "rank_percentages": {
+        "rank_1": 31.6,
+        "rank_2": 29.2,
+        "rank_3": 20.0,
+        "rank_4": 19.2
+      },
+      "rank1_accuracy": 0.316,
+      "rank1_correct": 158,
+      "num_examples": 500
+    }
+  },
+  "original_same_500": {
+    "ending_alone": {
+      "mean_cos_correct": 0.4901308185942471,
+      "mean_cos_wrong_all3": 0.42865710209620494,
+      "gap_all3": 0.061473716498042175,
+      "cos_correct_std": 0.18486521653856788,
+      "gap_std": 0.18178781883424042,
+      "rank_counts": {
+        "1": 188,
+        "2": 116,
+        "3": 118,
+        "4": 78
+      },
+      "rank_percentages": {
+        "rank_1": 37.6,
+        "rank_2": 23.2,
+        "rank_3": 23.6,
+        "rank_4": 15.6
+      },
+      "rank1_accuracy": 0.376,
+      "rank1_correct": 188,
+      "num_examples": 500
+    },
+    "ctx_plus_ending": {
+      "mean_cos_correct": 0.93231185901165,
+      "mean_cos_wrong_all3": 0.9186905843019485,
+      "gap_all3": 0.013621274709701536,
+      "cos_correct_std": 0.05511162666693996,
+      "gap_std": 0.04493689741773575,
+      "rank_counts": {
+        "1": 182,
+        "2": 121,
+        "3": 114,
+        "4": 83
+      },
+      "rank_percentages": {
+        "rank_1": 36.4,
+        "rank_2": 24.2,
+        "rank_3": 22.8,
+        "rank_4": 16.6
+      },
+      "rank1_accuracy": 0.364,
+      "rank1_correct": 182,
+      "num_examples": 500
+    }
+  },
+  "comparison": {
+    "structured_rank1_accuracy": 0.36,
+    "original_rank1_same_500": 0.376,
+    "delta_same_set": -0.016000000000000014,
+    "original_honest_no_navigation_5042": 0.2973026576755256,
+    "delta_vs_published_honest": 0.06269734232447438,
+    "structured_beats_original": false
+  },
+  "training_snapshot": {
+    "final_probe_mean_cos_correct": 0.475818395614624,
+    "final_probe_mean_cos_wrong": 0.15115028619766235,
+    "final_probe_gap": 0.32466810941696167,
+    "initial_probe_gap": 0.05742824077606201,
+    "best_epoch": 10
+  }
+}

@@ -23,6 +23,8 @@ HEAD_HIDDEN_DIM = 512
 LATENT_DIM = 256
 DECODER_HIDDEN_DIM = 256
 KL_WEIGHT = 0.001
+# TASK 13: default margin for the structure (margin ranking) loss.
+DEFAULT_STRUCTURE_MARGIN = 0.5
 
 TextInput = Union[str, Sequence[str]]
 
@@ -268,3 +270,69 @@ def vae_loss(
 
     total = reconstruction_loss + kl_weight * kl_loss
     return total, reconstruction_loss, kl_loss
+
+
+def structure_loss(
+    ctx_vectors: torch.Tensor,
+    correct_vectors: torch.Tensor,
+    wrong_vectors: torch.Tensor,
+    margin: float = DEFAULT_STRUCTURE_MARGIN,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """TASK 13 margin ranking loss: pull the correct ending inside the margin.
+
+    For every example the scorer (``src/eval/evaluate.py``) ranks the four
+    candidate endings by ``cos(ending, ctx)``. This loss makes the geometry
+    itself carry that decision::
+
+        L = mean( max(0, cos(ctx, wrong) - cos(ctx, correct) + margin) )
+
+    i.e. it is satisfied only once ``cos(ctx, correct) > cos(ctx, wrong) + margin``.
+
+    All three arguments are **deterministic ``mu`` vectors** (never sampled ``z``),
+    because ``mu`` is exactly what inference uses.
+
+    Typical magnitudes on this dataset: the per-element cosine gap between the
+    correct and a wrong ending is only ~+0.02, so a margin of 0.5 is far outside
+    reach and the loss stays saturated - it still supplies a usable gradient that
+    grows the gap, which is the point of the task.
+
+    Returns ``(loss, mean_cos_correct, mean_cos_wrong)``.
+    """
+    cos_correct = F.cosine_similarity(ctx_vectors, correct_vectors, dim=-1)
+    cos_wrong = F.cosine_similarity(ctx_vectors, wrong_vectors, dim=-1)
+
+    loss = F.relu(cos_wrong - cos_correct + margin).mean()
+    return loss, cos_correct.mean(), cos_wrong.mean()
+
+
+def structure_loss_all_wrong(
+    ctx_vectors: torch.Tensor,
+    correct_vectors: torch.Tensor,
+    wrong_vectors: torch.Tensor,
+    margin: float = DEFAULT_STRUCTURE_MARGIN,
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """TASK 14 margin ranking loss against ALL wrong endings at once.
+
+    ``structure_loss`` only ever sees ONE sampled wrong ending, so the other two
+    are unconstrained: the model can push the sampled negative away while leaving
+    the others closer to the context than the correct ending. This variant takes
+    ``wrong_vectors`` of shape ``(N, K, D)`` (``K = 3`` for HellaSwag) and requires
+    *every* wrong ending to fall below the correct one::
+
+        L = mean_{i,k} max(0, cos(ctx_i, wrong_ik) - cos(ctx_i, correct_i) + margin)
+
+    Averaging over ``k`` and then over the batch is identical to averaging over all
+    ``N * K`` pairs, so ``L`` is the plain mean hinge - just with 3x the gradient
+    signal per example.
+
+    All three arguments are deterministic ``mu`` vectors.
+
+    Returns ``(loss, mean_cos_correct, mean_cos_wrong)``.
+    """
+    cos_correct = F.cosine_similarity(ctx_vectors, correct_vectors, dim=-1)  # (N,)
+    cos_wrong = F.cosine_similarity(
+        ctx_vectors.unsqueeze(1), wrong_vectors, dim=-1
+    )  # (N, K)
+
+    loss = F.relu(cos_wrong - cos_correct.unsqueeze(1) + margin).mean()
+    return loss, cos_correct.mean(), cos_wrong.mean()

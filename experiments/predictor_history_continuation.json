@@ -1,0 +1,644 @@
+{
+  "task": "TASK 27 - latent predictor (prediction in latent space)",
+  "config": {
+    "vae_checkpoint": "checkpoints\\vae_continuation.pt",
+    "pairs_file": "\\environment\\data\\wikitext\\val_pairs.json",
+    "passes": 5,
+    "batch_size": 128,
+    "learning_rate": 0.001,
+    "knn_k": 10,
+    "fuse_top_k": 3,
+    "min_memory_entries": 5,
+    "outcome_floor": 0.1,
+    "growth_buckets": 10,
+    "seed": 0,
+    "device": "cpu"
+  },
+  "data": {
+    "num_pairs": 7666,
+    "unique_sentences": 8171,
+    "passes": 5,
+    "latent_dim": 256,
+    "vector_cache": "checkpoints\\wikitext_val_predictor_vecs_continuation.npz"
+  },
+  "predictor": {
+    "parameter_count": 461312,
+    "description": "LatentPredictor(input=512: Linear(512) + LayerNorm + GELU -> Linear(256) + LayerNorm + GELU -> Linear(256) -> L2norm; unit-sphere output)",
+    "checkpoint": "checkpoints\\latent_predictor_continuation.pt",
+    "baseline_checkpoint": "checkpoints\\latent_predictor_continuation_nomemory.pt"
+  },
+  "leak_guards": {
+    "self_retrieval_excluded": true,
+    "recall_reported_with_and_without_self": true
+  },
+  "with_memory": {
+    "passes": [
+      {
+        "pass": 1,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.5726109644528814,
+          "mean_cos": 0.42738903562316977,
+          "contexts_used": 7409,
+          "memory_size": 7666,
+          "gradient_steps": 60,
+          "seconds": 12.81644409999717
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.46073782444000244,
+          "mean_cos": 0.5392622351646423,
+          "cos_std": 0.09344051033258438,
+          "cos_p10": 0.4231839179992676,
+          "cos_p90": 0.6559034585952759,
+          "memory_size": 7666,
+          "zero_context_fraction": 0.0,
+          "top1_recall": 0.0007826767545003914,
+          "top1_recall_excl_self": 0.0
+        }
+      },
+      {
+        "pass": 2,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.4496290272438523,
+          "mean_cos": 0.5503709727916221,
+          "contexts_used": 7666,
+          "memory_size": 15332,
+          "gradient_steps": 60,
+          "seconds": 14.902934299956542
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.41121917963027954,
+          "mean_cos": 0.5887807607650757,
+          "cos_std": 0.10585848242044449,
+          "cos_p10": 0.4488082528114319,
+          "cos_p90": 0.7155759334564209,
+          "memory_size": 15332,
+          "zero_context_fraction": 0.0,
+          "top1_recall": 0.002217584137751109,
+          "top1_recall_excl_self": 0.0
+        }
+      },
+      {
+        "pass": 3,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.4035967201375476,
+          "mean_cos": 0.5964032799457928,
+          "contexts_used": 7666,
+          "memory_size": 22998,
+          "gradient_steps": 60,
+          "seconds": 19.578522499999963
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.385946661233902,
+          "mean_cos": 0.6140533685684204,
+          "cos_std": 0.105445496737957,
+          "cos_p10": 0.47426456212997437,
+          "cos_p90": 0.740699827671051,
+          "memory_size": 22998,
+          "zero_context_fraction": 0.0,
+          "top1_recall": 0.003913383772501957,
+          "top1_recall_excl_self": 0.0
+        }
+      },
+      {
+        "pass": 4,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.38113584184565746,
+          "mean_cos": 0.6188641581125509,
+          "contexts_used": 7666,
+          "memory_size": 30664,
+          "gradient_steps": 60,
+          "seconds": 26.972445899969898
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.3653266429901123,
+          "mean_cos": 0.6346734166145325,
+          "cos_std": 0.1081605777144432,
+          "cos_p10": 0.4926656186580658,
+          "cos_p90": 0.761627197265625,
+          "memory_size": 30664,
+          "zero_context_fraction": 0.0,
+          "top1_recall": 0.006000521784503,
+          "top1_recall_excl_self": 0.00013044612575006522
+        }
+      },
+      {
+        "pass": 5,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.3649012095975465,
+          "mean_cos": 0.635098790280966,
+          "contexts_used": 7666,
+          "memory_size": 38330,
+          "gradient_steps": 60,
+          "seconds": 29.175027700024657
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.351341187953949,
+          "mean_cos": 0.6486587524414062,
+          "cos_std": 0.10843965411186218,
+          "cos_p10": 0.5043610334396362,
+          "cos_p90": 0.7749807834625244,
+          "memory_size": 38330,
+          "zero_context_fraction": 0.0,
+          "top1_recall": 0.007304983042003652,
+          "top1_recall_excl_self": 0.0
+        }
+      }
+    ],
+    "growth_curve": [
+      {
+        "bucket": 1,
+        "memory_size_start": 0,
+        "memory_size_end": 766,
+        "num_examples": 766,
+        "mean_loss": 0.38841473869493054,
+        "mean_cos": 0.6115852610229979
+      },
+      {
+        "bucket": 2,
+        "memory_size_start": 766,
+        "memory_size_end": 1533,
+        "num_examples": 767,
+        "mean_loss": 0.3794331324457967,
+        "mean_cos": 0.620566867204502
+      },
+      {
+        "bucket": 3,
+        "memory_size_start": 1533,
+        "memory_size_end": 2299,
+        "num_examples": 766,
+        "mean_loss": 0.36365878449718886,
+        "mean_cos": 0.6363412155417176
+      },
+      {
+        "bucket": 4,
+        "memory_size_start": 2299,
+        "memory_size_end": 3066,
+        "num_examples": 767,
+        "mean_loss": 0.3805062529161048,
+        "mean_cos": 0.6194937469090446
+      },
+      {
+        "bucket": 5,
+        "memory_size_start": 3066,
+        "memory_size_end": 3833,
+        "num_examples": 767,
+        "mean_loss": 0.35767104580629294,
+        "mean_cos": 0.642328954339416
+      },
+      {
+        "bucket": 6,
+        "memory_size_start": 3833,
+        "memory_size_end": 4599,
+        "num_examples": 766,
+        "mean_loss": 0.3971833469973532,
+        "mean_cos": 0.6028166527692083
+      },
+      {
+        "bucket": 7,
+        "memory_size_start": 4599,
+        "memory_size_end": 5366,
+        "num_examples": 767,
+        "mean_loss": 0.338864036224967,
+        "mean_cos": 0.6611359637944608
+      },
+      {
+        "bucket": 8,
+        "memory_size_start": 5366,
+        "memory_size_end": 6132,
+        "num_examples": 766,
+        "mean_loss": 0.33201163159026803,
+        "mean_cos": 0.6679883685848109
+      },
+      {
+        "bucket": 9,
+        "memory_size_start": 6132,
+        "memory_size_end": 6899,
+        "num_examples": 767,
+        "mean_loss": 0.35150895466860455,
+        "mean_cos": 0.6484910454868182
+      },
+      {
+        "bucket": 10,
+        "memory_size_start": 6899,
+        "memory_size_end": 7666,
+        "num_examples": 767,
+        "mean_loss": 0.36223968750805713,
+        "mean_cos": 0.6377603125502265
+      }
+    ],
+    "memory_size_sweep": [
+      {
+        "memory_size": 0,
+        "num_examples": 1024,
+        "mean_loss": 0.3510993719100952,
+        "mean_cos": 0.6489006280899048,
+        "zero_context_fraction": 1.0
+      },
+      {
+        "memory_size": 256,
+        "num_examples": 1024,
+        "mean_loss": 0.3663550615310669,
+        "mean_cos": 0.6336449384689331,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.6336449384689331,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": -0.015255682439601514,
+          "median_delta": -0.011009901762008667,
+          "delta_std": 0.03380151835410548,
+          "paired_t_statistic": -14.442600860501129,
+          "a_wins": 344,
+          "b_wins": 680,
+          "ties": 0,
+          "share_a_wins": 0.3359375
+        }
+      },
+      {
+        "memory_size": 512,
+        "num_examples": 1024,
+        "mean_loss": 0.3583064377307892,
+        "mean_cos": 0.6416935920715332,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.6416935920715332,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": -0.00720704752166057,
+          "median_delta": -0.006299912929534912,
+          "delta_std": 0.02688641159903801,
+          "paired_t_statistic": -8.577772449983247,
+          "a_wins": 387,
+          "b_wins": 637,
+          "ties": 0,
+          "share_a_wins": 0.3779296875
+        }
+      },
+      {
+        "memory_size": 1024,
+        "num_examples": 1024,
+        "mean_loss": 0.35933518409729004,
+        "mean_cos": 0.64066481590271,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.64066481590271,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": -0.008235805798904039,
+          "median_delta": -0.006089001893997192,
+          "delta_std": 0.028455697410216398,
+          "paired_t_statistic": -9.26161751601663,
+          "a_wins": 409,
+          "b_wins": 615,
+          "ties": 0,
+          "share_a_wins": 0.3994140625
+        }
+      },
+      {
+        "memory_size": 2048,
+        "num_examples": 1024,
+        "mean_loss": 0.3542734384536743,
+        "mean_cos": 0.6457265615463257,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.6457265615463257,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": -0.0031740584381623194,
+          "median_delta": -0.0027081966400146484,
+          "delta_std": 0.027353189902050594,
+          "paired_t_statistic": -3.713273310531866,
+          "a_wins": 456,
+          "b_wins": 568,
+          "ties": 0,
+          "share_a_wins": 0.4453125
+        }
+      },
+      {
+        "memory_size": 4096,
+        "num_examples": 1024,
+        "mean_loss": 0.3557187616825104,
+        "mean_cos": 0.6442812085151672,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.6442812085151672,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": -0.004619380037183873,
+          "median_delta": -0.0035867393016815186,
+          "delta_std": 0.028950415107040824,
+          "paired_t_statistic": -5.105977259508575,
+          "a_wins": 447,
+          "b_wins": 577,
+          "ties": 0,
+          "share_a_wins": 0.4365234375
+        }
+      },
+      {
+        "memory_size": 38330,
+        "num_examples": 1024,
+        "mean_loss": 0.34418565034866333,
+        "mean_cos": 0.6558143496513367,
+        "zero_context_fraction": 0.0,
+        "paired_vs_memoryless": {
+          "num_examples": 1024,
+          "mean_cos_a": 0.6558143496513367,
+          "mean_cos_b": 0.6489006280899048,
+          "mean_delta": 0.006913712924870197,
+          "median_delta": 0.004225105047225952,
+          "delta_std": 0.03050045862160791,
+          "paired_t_statistic": 7.253622522223671,
+          "a_wins": 601,
+          "b_wins": 423,
+          "ties": 0,
+          "share_a_wins": 0.5869140625
+        }
+      }
+    ],
+    "zero_context_eval": {
+      "num_examples": 7666,
+      "mean_loss": 0.3586130738258362,
+      "mean_cos": 0.6413869261741638,
+      "cos_std": 0.10687954723834991,
+      "cos_p10": 0.5008789300918579,
+      "cos_p90": 0.7672266960144043,
+      "memory_size": 0,
+      "zero_context_fraction": 1.0
+    },
+    "paired_vs_zero_context": {
+      "num_examples": 7666,
+      "mean_cos_a": 0.6486587524414062,
+      "mean_cos_b": 0.6413869261741638,
+      "mean_delta": 0.007271904656758297,
+      "median_delta": 0.005072206258773804,
+      "delta_std": 0.03417528189557305,
+      "paired_t_statistic": 18.630327014754517,
+      "a_wins": 4509,
+      "b_wins": 3157,
+      "ties": 0,
+      "share_a_wins": 0.5881815810070441
+    },
+    "paired_vs_no_memory_predictor": {
+      "num_examples": 7666,
+      "mean_cos_a": 0.6486587524414062,
+      "mean_cos_b": 0.6437176465988159,
+      "mean_delta": 0.004941189087715467,
+      "median_delta": 0.0027253925800323486,
+      "delta_std": 0.03760031290635564,
+      "paired_t_statistic": 11.50600138578786,
+      "a_wins": 4129,
+      "b_wins": 3537,
+      "ties": 0,
+      "share_a_wins": 0.5386120532220193
+    }
+  },
+  "no_memory_baseline": {
+    "passes": [
+      {
+        "pass": 1,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.5628743225807251,
+          "mean_cos": 0.43712567742109715,
+          "contexts_used": 0,
+          "memory_size": 0,
+          "gradient_steps": 60,
+          "seconds": 5.3330625999951735
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.44726842641830444,
+          "mean_cos": 0.5527315735816956,
+          "cos_std": 0.09291289746761322,
+          "cos_p10": 0.434035062789917,
+          "cos_p90": 0.6673569083213806,
+          "memory_size": 0,
+          "zero_context_fraction": 1.0
+        }
+      },
+      {
+        "pass": 2,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.43345540568345275,
+          "mean_cos": 0.5665445942966233,
+          "contexts_used": 0,
+          "memory_size": 0,
+          "gradient_steps": 60,
+          "seconds": 6.687768800009508
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.40312182903289795,
+          "mean_cos": 0.596878170967102,
+          "cos_std": 0.09923267364501953,
+          "cos_p10": 0.4658735394477844,
+          "cos_p90": 0.7162938714027405,
+          "memory_size": 0,
+          "zero_context_fraction": 1.0
+        }
+      },
+      {
+        "pass": 3,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.39570177518105404,
+          "mean_cos": 0.6042982247188403,
+          "contexts_used": 0,
+          "memory_size": 0,
+          "gradient_steps": 60,
+          "seconds": 6.5994457000051625
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.3791397213935852,
+          "mean_cos": 0.62086021900177,
+          "cos_std": 0.1056799665093422,
+          "cos_p10": 0.47988051176071167,
+          "cos_p90": 0.746539831161499,
+          "memory_size": 0,
+          "zero_context_fraction": 1.0
+        }
+      },
+      {
+        "pass": 4,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.37869404905961385,
+          "mean_cos": 0.6213059509607961,
+          "contexts_used": 0,
+          "memory_size": 0,
+          "gradient_steps": 60,
+          "seconds": 5.35442469996633
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.3654501736164093,
+          "mean_cos": 0.6345498561859131,
+          "cos_std": 0.10971830040216446,
+          "cos_p10": 0.49021750688552856,
+          "cos_p90": 0.7636334300041199,
+          "memory_size": 0,
+          "zero_context_fraction": 1.0
+        }
+      },
+      {
+        "pass": 5,
+        "train": {
+          "num_examples": 7666,
+          "mean_loss": 0.36736163642367275,
+          "mean_cos": 0.6326383635287042,
+          "contexts_used": 0,
+          "memory_size": 0,
+          "gradient_steps": 60,
+          "seconds": 6.102887699962594
+        },
+        "eval": {
+          "num_examples": 7666,
+          "mean_loss": 0.35628238320350647,
+          "mean_cos": 0.6437176465988159,
+          "cos_std": 0.10997026413679123,
+          "cos_p10": 0.49876827001571655,
+          "cos_p90": 0.7731006145477295,
+          "memory_size": 0,
+          "zero_context_fraction": 1.0
+        }
+      }
+    ],
+    "final_eval": {
+      "num_examples": 7666,
+      "mean_loss": 0.35628238320350647,
+      "mean_cos": 0.6437176465988159,
+      "cos_std": 0.10997026413679123,
+      "cos_p10": 0.49876827001571655,
+      "cos_p90": 0.7731006145477295,
+      "memory_size": 0,
+      "zero_context_fraction": 1.0
+    }
+  },
+  "comparison": {
+    "with_memory": {
+      "pass1_eval_loss": 0.46073782444000244,
+      "pass1_eval_cos": 0.5392622351646423,
+      "final_eval_loss": 0.351341187953949,
+      "final_eval_cos": 0.6486587524414062,
+      "final_top1_recall": 0.007304983042003652,
+      "final_top1_recall_excl_self": 0.0,
+      "memory_size": 38330,
+      "eval_loss_decreased_over_passes": true,
+      "eval_cos_gain_pass1_to_final": 0.10939651727676392
+    },
+    "zero_context_same_predictor": {
+      "mean_loss": 0.3586130738258362,
+      "mean_cos": 0.6413869261741638
+    },
+    "memory_growth": {
+      "buckets": 10,
+      "first_bucket_loss": 0.38841473869493054,
+      "last_bucket_loss": 0.36223968750805713,
+      "first_bucket_cos": 0.6115852610229979,
+      "last_bucket_cos": 0.6377603125502265,
+      "loss_improves_with_memory": true,
+      "memory_size_after_replay": 7666,
+      "note": "unpaired: each bucket is a different, topically ordered run of examples, so it mixes the memory effect with example difficulty - use memory_size_sweep for the controlled version"
+    },
+    "memory_size_sweep": {
+      "sample_size": 1024,
+      "sizes": [
+        0,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        38330
+      ],
+      "losses": [
+        0.3510993719100952,
+        0.3663550615310669,
+        0.3583064377307892,
+        0.35933518409729004,
+        0.3542734384536743,
+        0.3557187616825104,
+        0.34418565034866333
+      ],
+      "cosines": [
+        0.6489006280899048,
+        0.6336449384689331,
+        0.6416935920715332,
+        0.64066481590271,
+        0.6457265615463257,
+        0.6442812085151672,
+        0.6558143496513367
+      ],
+      "paired_deltas_vs_memoryless": [
+        null,
+        -0.015255682439601514,
+        -0.00720704752166057,
+        -0.008235805798904039,
+        -0.0031740584381623194,
+        -0.004619380037183873,
+        0.006913712924870197
+      ],
+      "paired_t_vs_memoryless": [
+        null,
+        -14.442600860501129,
+        -8.577772449983247,
+        -9.26161751601663,
+        -3.713273310531866,
+        -5.105977259508575,
+        7.253622522223671
+      ],
+      "loss_improves_with_memory": true
+    },
+    "paired_memory_vs_zero_context": {
+      "num_examples": 7666,
+      "mean_cos_a": 0.6486587524414062,
+      "mean_cos_b": 0.6413869261741638,
+      "mean_delta": 0.007271904656758297,
+      "median_delta": 0.005072206258773804,
+      "delta_std": 0.03417528189557305,
+      "paired_t_statistic": 18.630327014754517,
+      "a_wins": 4509,
+      "b_wins": 3157,
+      "ties": 0,
+      "share_a_wins": 0.5881815810070441
+    },
+    "memory_helps_vs_zero_context_same_predictor": true,
+    "paired_memory_vs_no_memory_predictor": {
+      "num_examples": 7666,
+      "mean_cos_a": 0.6486587524414062,
+      "mean_cos_b": 0.6437176465988159,
+      "mean_delta": 0.004941189087715467,
+      "median_delta": 0.0027253925800323486,
+      "delta_std": 0.03760031290635564,
+      "paired_t_statistic": 11.50600138578786,
+      "a_wins": 4129,
+      "b_wins": 3537,
+      "ties": 0,
+      "share_a_wins": 0.5386120532220193
+    },
+    "no_memory_baseline_predictor": {
+      "mean_loss": 0.35628238320350647,
+      "mean_cos": 0.6437176465988159,
+      "passes": [
+        0.5628743225807251,
+        0.43345540568345275,
+        0.39570177518105404,
+        0.37869404905961385,
+        0.36736163642367275
+      ]
+    },
+    "memory_helps_vs_no_memory_predictor": true
+  }
+}

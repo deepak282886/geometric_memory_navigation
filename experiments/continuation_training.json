@@ -1,0 +1,142 @@
+{
+  "task": "STEP 0 - VAE continuation encoder (CLIP-style next-sentence signal)",
+  "config": {
+    "load": "\\checkpoints\\vae.pt",
+    "pairs": "\\environment\\data\\wikitext\\val_pairs.json",
+    "base_cache": "\\checkpoints\\wikitext_val_base_embeddings.npz",
+    "checkpoint": "\\checkpoints\\vae_continuation.pt",
+    "final_checkpoint": "\\checkpoints\\vae_continuation_final.pt",
+    "epochs": 5,
+    "batch_size": 32,
+    "learning_rate": 0.0001,
+    "temperature": 0.07,
+    "seed": 42,
+    "max_pairs": 0,
+    "device": "cpu"
+  },
+  "method": {
+    "anchors": "unit(mu_head(base(S_n)))",
+    "positives": "unit(mu_head(base(S_n+1)))",
+    "loss": "CrossEntropy(anchors @ positives^T / temperature, arange(B))",
+    "negatives": "in-batch",
+    "unfrozen": "VAE head only (fc, mu_layer, logvar_layer)",
+    "frozen": "all-MiniLM-L6-v2 base encoder, decoder",
+    "note": "logvar_layer is unfrozen as specified but receives no gradient: this loss has no KL term and only mu is used."
+  },
+  "initial_metrics_vae_pt_head": {
+    "loss": 1.8526138429840406,
+    "cos_pair": 0.5547254247697322,
+    "cos_other": 0.28927294090390204,
+    "gap": 0.26545248386583015,
+    "top1_in_batch": 0.49673884685624836,
+    "num_examples": 7666,
+    "num_batches": 240
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.688104004661242,
+      "seconds": 0.512773800001014,
+      "loss": 1.5304548189043998,
+      "cos_pair": 0.5739943730454632,
+      "cos_other": 0.254133636256059,
+      "gap": 0.3198607367894042,
+      "top1_in_batch": 0.557918079833029,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.4606924965977668,
+      "seconds": 0.5101567000383511,
+      "loss": 1.3636167933543524,
+      "cos_pair": 0.5812411217612793,
+      "cos_other": 0.22071392914901178,
+      "gap": 0.3605271926122675,
+      "top1_in_batch": 0.6005739629533002,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.3568235233426094,
+      "seconds": 0.5099839000031352,
+      "loss": 1.2797073195377986,
+      "cos_pair": 0.5846059206679285,
+      "cos_other": 0.19420688326160113,
+      "gap": 0.39039903740632736,
+      "top1_in_batch": 0.6162274980433081,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.2841001138091088,
+      "seconds": 0.5045131999650039,
+      "loss": 1.2198206633329391,
+      "cos_pair": 0.6011733196752558,
+      "cos_other": 0.20141163940231005,
+      "gap": 0.39976168027294573,
+      "top1_in_batch": 0.6249673884685625,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.1985959984362125,
+      "seconds": 0.5011081999982707,
+      "loss": 1.1411164740721385,
+      "cos_pair": 0.6006513494320803,
+      "cos_other": 0.18266241097201905,
+      "gap": 0.41798893846006124,
+      "top1_in_batch": 0.6428385076963214,
+      "num_examples": 7666,
+      "num_batches": 240
+    }
+  ],
+  "best": {
+    "epoch": 5,
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 1.1985959984362125,
+      "seconds": 0.5011081999982707,
+      "loss": 1.1411164740721385,
+      "cos_pair": 0.6006513494320803,
+      "cos_other": 0.18266241097201905,
+      "gap": 0.41798893846006124,
+      "top1_in_batch": 0.6428385076963214,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    "checkpoint": "\\checkpoints\\vae_continuation.pt",
+    "size_mb": 2.3869218826293945
+  },
+  "final": {
+    "epoch": 5,
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 1.1985959984362125,
+      "seconds": 0.5011081999982707,
+      "loss": 1.1411164740721385,
+      "cos_pair": 0.6006513494320803,
+      "cos_other": 0.18266241097201905,
+      "gap": 0.41798893846006124,
+      "top1_in_batch": 0.6428385076963214,
+      "num_examples": 7666,
+      "num_batches": 240
+    },
+    "checkpoint": "\\checkpoints\\vae_continuation_final.pt",
+    "size_mb": 2.3870744705200195
+  },
+  "improvement": {
+    "loss": 0.7114973689119022,
+    "gap": 0.1525364545942311,
+    "top1_in_batch": 0.1460996608400731
+  },
+  "loaded_checkpoint_metadata": {
+    "epochs": 10,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "final_loss": 0.0010725660249590874
+  }
+}

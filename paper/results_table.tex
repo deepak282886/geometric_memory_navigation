@@ -8,13 +8,13 @@
 Model & Parameters & Accuracy & $p$ vs GPT-2 \\
 \midrule
 Random baseline & -- & 25.0\% & -- \\
-GPT-2 small & 124M & 25.6\% & baseline \\
+GPT-2 small & 124M & 28.6\% & baseline \\
 \midrule
-GMN (geometric scoring) & 0.62M & \textbf{29.7\%} & $<0.001$ \\
-GMN + navigation ($\lambda=0.50$) & 0.62M & 28.6\% & $<0.001$ \\
+GMN original VAE (no navigation) & 0.62M & 31.3\% & $<0.001$ \\
+GMN CLIP-style ($T=0.10$) & 0.62M & \textbf{32.4\%}$^*$ & $<0.001$ \\
 \bottomrule
 \end{tabular}
-\caption{Accuracy on the HellaSwag held-out evaluation set (5{,}042 examples). $\lambda$ was tuned on a disjoint 5{,}000-example split, so the navigation row is not fitted to the reported set. GMN uses geometric ending scoring; navigation adds no significant benefit ($p=0.0616$ against the no-navigation baseline). All $p$-values are exact McNemar tests paired on the same 5{,}042 examples. Random is chance level for a 4-way choice (measured 25.8\% on the 500-example subset).}
+\caption{Accuracy on the full HellaSwag validation set (10{,}042 examples; chance level 25.0\%, measured 25.8\% on the 500-example subset). Both GMN rows use geometric ending scoring with 624{,}256 trainable parameters - 199$\times$ fewer than GPT-2 small. The CLIP-style model fine-tunes the VAE head directly on the 4-way scoring objective and improves on the reconstruction-trained VAE by +1.1 points (p = 0.0034). $^*$The temperature was chosen by a 500-example validation rule fixed before the sweep, so 32.4\% is the pre-registered number; the best-observed value is 32.6\% at $T=0.07$ (p = 0.0010 against the original VAE), selected post hoc on this same set and therefore optimistic. All $p$-values are exact McNemar tests paired on the same 10{,}042 examples.}
 \label{tab:main}
 \end{table}
 
@@ -35,4 +35,21 @@ Additive ($\lambda$=0.50, honest) & 5{,}042 & 28.6\% & $-1.2$ & 0.0616 \\
 \end{tabular}
 \caption{Navigation ablation, reported as two panels because the variants were measured on different sets: chord/tangent/continuation on the full validation set (10{,}042 examples, baseline 31.3\%), and the additive model on the honest sub-split (5{,}042 examples, baseline 29.7\%). Rows are comparable within a panel but not across the midrule. Chord navigation significantly degrades accuracy; both geometric fixes recover part of the loss, yet every navigated variant stays significantly worse than context-only scoring. No variant significantly outperforms it.}
 \label{tab:ablation}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llcc}
+\toprule
+Method & VAE training & Accuracy & vs original \\
+\midrule
+Original VAE & Reconstruction + KL & 31.3\% & baseline \\
+Margin ranking (margin=0.3) & + Margin ranking loss & 31.9\% & $+0.6$ ($p=0.3083$) (n.s.) \\
+CLIP-style ($T=0.10$) & Task fine-tuning (4-way CE) & 32.4\% & $+1.1$ ($p=0.0034$) \\
+CLIP-style ($T=0.07$) & Task fine-tuning (4-way CE) & \textbf{32.6\%}$^*$ & $+1.3$ ($p=0.0010$) \\
+GPT-2 small & Autoregressive LM & 28.6\% & $-2.7$ \\
+\bottomrule
+\end{tabular}
+\caption{Effect of the VAE training objective on geometric ending scoring, all rows on the full 10{,}042-example validation set so the deltas are same-set. Every GMN variant shares the same 624{,}256 trainable parameters and the same frozen sentence encoder; only the training objective changes. Adding a margin-ranking loss to reconstruction widens the correct-vs-wrong cosine gap (0.027 $\to$ 0.047) but buys nothing (p = 0.3083). Training the head end-to-end on the 4-way scoring objective is the first change that helps (+1.1 points, p = 0.0034), while producing by far the \emph{smallest} cosine gap (0.007): the gap is not what carries the signal. $^*$post-hoc temperature selection on this same set; the pre-registered configuration is the row above. `n.s.' marks $p\ge0.05$.}
+\label{tab:structure}
 \end{table}

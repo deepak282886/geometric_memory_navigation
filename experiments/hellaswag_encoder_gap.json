@@ -1,0 +1,54 @@
+{
+  "task": "STEP 0 verification - HellaSwag ctx-only score gap",
+  "dataset": "hellaswag",
+  "split": "validation (full)",
+  "metric": "mean cos(ctx, correct ending) - mean cos(ctx, wrong endings), lambda_nav = 0 (same quantity as Paper 1's score_gap_ctx)",
+  "base_cache": "\\checkpoints\\val_full_base_embeddings.npz",
+  "num_examples": 10042,
+  "published_original": {
+    "score_gap_ctx": 0.019494308728662313,
+    "no_navigation_accuracy": 0.31308504282015537
+  },
+  "self_check": {
+    "reproduces_score_gap": false,
+    "reproduces_no_navigation_accuracy": true
+  },
+  "models": {
+    "Original (vae.pt)": {
+      "mean_cos_correct": 0.6442576943811573,
+      "mean_cos_wrong": 0.6168528302348044,
+      "score_gap_ctx": 0.027404864146352834,
+      "score_gap_ctx_std": 0.15340246939484078,
+      "no_navigation_accuracy": 0.31308504282015537,
+      "correct": 3144,
+      "num_examples": 10042
+    },
+    "Continuation (vae_continuation.pt)": {
+      "mean_cos_correct": 0.6705352997557932,
+      "mean_cos_wrong": 0.6471117875548473,
+      "score_gap_ctx": 0.02342351220094579,
+      "score_gap_ctx_std": 0.14206201089786125,
+      "no_navigation_accuracy": 0.3090021907986457,
+      "correct": 3103,
+      "num_examples": 10042
+    }
+  },
+  "paired_vs_original": {
+    "Continuation (vae_continuation.pt)": {
+      "vs": "Original (vae.pt)",
+      "score_gap_ctx": {
+        "mean_better": 0.02342351220094579,
+        "mean_reference": 0.027404864146352834,
+        "mean_delta": -0.0039813519454070445,
+        "delta_std": 0.04408394791089217,
+        "paired_t_statistic": -9.050242124555705,
+        "wins": 4689,
+        "losses": 5353,
+        "share_wins": 0.466938856801434
+      },
+      "no_navigation_accuracy": 0.3090021907986457,
+      "accuracy_delta": -0.004082852021509653
+    }
+  },
+  "fairness_note": "the original head was trained on HellaSwag train text, the continuation head on WikiText pairs only; a wider gap here is cross-domain transfer"
+}

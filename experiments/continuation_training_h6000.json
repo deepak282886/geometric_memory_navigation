@@ -1,0 +1,142 @@
+{
+  "task": "STEP 0 - VAE continuation encoder (CLIP-style next-sentence signal)",
+  "config": {
+    "load": "\\checkpoints\\vae.pt",
+    "pairs": "\\environment\\data\\wikitext\\val_pairs.json",
+    "base_cache": "\\checkpoints\\wikitext_val_base_embeddings.npz",
+    "checkpoint": "checkpoints\\vae_continuation_h6000.pt",
+    "final_checkpoint": "checkpoints\\vae_continuation_h6000_final.pt",
+    "epochs": 5,
+    "batch_size": 32,
+    "learning_rate": 0.0001,
+    "temperature": 0.07,
+    "seed": 42,
+    "max_pairs": 6000,
+    "device": "cpu"
+  },
+  "method": {
+    "anchors": "unit(mu_head(base(S_n)))",
+    "positives": "unit(mu_head(base(S_n+1)))",
+    "loss": "CrossEntropy(anchors @ positives^T / temperature, arange(B))",
+    "negatives": "in-batch",
+    "unfrozen": "VAE head only (fc, mu_layer, logvar_layer)",
+    "frozen": "all-MiniLM-L6-v2 base encoder, decoder",
+    "note": "logvar_layer is unfrozen as specified but receives no gradient: this loss has no KL term and only mu is used."
+  },
+  "initial_metrics_vae_pt_head": {
+    "loss": 1.851486807807963,
+    "cos_pair": 0.5661892388667912,
+    "cos_other": 0.2990942843099858,
+    "gap": 0.2670949545568054,
+    "top1_in_batch": 0.495,
+    "num_examples": 6000,
+    "num_batches": 188
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.721105398332819,
+      "seconds": 2.063719100027811,
+      "loss": 1.570041318523123,
+      "cos_pair": 0.5831678787590936,
+      "cos_other": 0.26820346768549147,
+      "gap": 0.3149644110736021,
+      "top1_in_batch": 0.5483333333333333,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.5111316407614566,
+      "seconds": 2.5610111000132747,
+      "loss": 1.4152294042262625,
+      "cos_pair": 0.5886088236182307,
+      "cos_other": 0.23137852763558955,
+      "gap": 0.3572302959826412,
+      "top1_in_batch": 0.573,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.384189951293012,
+      "seconds": 2.8193371000234038,
+      "loss": 1.308006835110644,
+      "cos_pair": 0.5981337609396626,
+      "cos_other": 0.21659505272165258,
+      "gap": 0.38153870821801006,
+      "top1_in_batch": 0.6073333333333333,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    {
+      "epoch": 4,
+      "train_loss": 1.290471373720372,
+      "seconds": 1.854540900036227,
+      "loss": 1.2252568665971146,
+      "cos_pair": 0.5995196003746242,
+      "cos_other": 0.19265802014381328,
+      "gap": 0.40686158023081087,
+      "top1_in_batch": 0.625,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    {
+      "epoch": 5,
+      "train_loss": 1.2519422471523285,
+      "seconds": 1.4726637999992818,
+      "loss": 1.193636729045117,
+      "cos_pair": 0.6149672997457286,
+      "cos_other": 0.20495128060909026,
+      "gap": 0.4100160191366383,
+      "top1_in_batch": 0.6303333333333333,
+      "num_examples": 6000,
+      "num_batches": 188
+    }
+  ],
+  "best": {
+    "epoch": 5,
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 1.2519422471523285,
+      "seconds": 1.4726637999992818,
+      "loss": 1.193636729045117,
+      "cos_pair": 0.6149672997457286,
+      "cos_other": 0.20495128060909026,
+      "gap": 0.4100160191366383,
+      "top1_in_batch": 0.6303333333333333,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    "checkpoint": "checkpoints\\vae_continuation_h6000.pt",
+    "size_mb": 2.3870744705200195
+  },
+  "final": {
+    "epoch": 5,
+    "metrics": {
+      "epoch": 5,
+      "train_loss": 1.2519422471523285,
+      "seconds": 1.4726637999992818,
+      "loss": 1.193636729045117,
+      "cos_pair": 0.6149672997457286,
+      "cos_other": 0.20495128060909026,
+      "gap": 0.4100160191366383,
+      "top1_in_batch": 0.6303333333333333,
+      "num_examples": 6000,
+      "num_batches": 188
+    },
+    "checkpoint": "checkpoints\\vae_continuation_h6000_final.pt",
+    "size_mb": 2.3872270584106445
+  },
+  "improvement": {
+    "loss": 0.6578500787628458,
+    "gap": 0.14292106457983295,
+    "top1_in_batch": 0.1353333333333333
+  },
+  "loaded_checkpoint_metadata": {
+    "epochs": 10,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "final_loss": 0.0010725660249590874
+  }
+}

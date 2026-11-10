@@ -197,3 +197,60 @@ def sample_sequentially(
         sample_memory(query, memory, weight, target=target)
         for memory, weight in zip(memories, weights)
     ]
+
+
+def retrieval_confidence(
+    query_vector: np.ndarray,
+    neighbors: Sequence[Dict[str, Any]],
+    threshold: float = 0.5,
+    top_n: int = 3,
+) -> Tuple[bool, float]:
+    """Are the retrieved neighbours relevant enough to trust the memory context?
+
+    TASK 29 measured the mechanism that makes this worth asking: the prediction delta
+    of memory-guided prediction correlates +0.569 with whether the fused context points
+    at the true next position, and the memory helps in-corpus (+0.0039 cosine) while it
+    hurts out-of-corpus (-0.0049). A query whose neighbours sit in the wrong
+    neighbourhood should therefore fall back to ``C = zeros`` instead of being dragged
+    off by them.
+
+    Metric: the mean cosine similarity of the ``top_n`` nearest neighbours to the query
+    (``top_n = 3`` because fusion weights the top-3 in ``fuse_directions``). ``True``
+    when that mean is ``>= threshold``, i.e. the neighbours really are around the query
+    rather than merely the least-bad memories in a distant region.
+
+    Returns ``(is_relevant, mean_similarity)``; an empty neighbour list gives
+    ``(False, 0.0)``, so a cold memory is never trusted.
+
+    Neighbour similarity keys
+    -------------------------
+    Every record in this project carries the query-to-neighbour cosine, but the two
+    store generations name it differently: ``MemoryStore`` (src/memory/store.py) uses
+    ``"distance"`` and ``DynamicMemoryStore``/``RegionStore`` use ``"similarity"``.
+    Both are accepted, so one gate serves both.
+
+    Calibration caveat
+    ------------------
+    The threshold's scale depends on ``top_n``: the TASK 29 numbers quoted for
+    calibration (in-corpus 0.7148 vs out-of-corpus 0.6704) are TOP-10 means, whereas
+    this statistic is a TOP-3 mean, which sits higher for the same query. The two are
+    not interchangeable, so the meaningful threshold range has to be read off the
+    actual distribution (``scripts/run_gated_sweep.py`` prints it). ``0.5`` is the
+    conservative default this task asked for: a query is trusted only when its three
+    nearest memories are all fairly close.
+    """
+    if not neighbors:
+        return False, 0.0
+    similarities: List[float] = []
+    for neighbor in neighbors:
+        value = neighbor.get("similarity", neighbor.get("distance"))
+        if value is None:
+            continue
+        similarities.append(float(value))
+    if not similarities:
+        return False, 0.0
+    keep = max(1, int(top_n))
+    top = sorted(similarities, reverse=True)[:keep]
+    mean_similarity = float(np.mean(top))
+    return mean_similarity >= float(threshold), mean_similarity
+

@@ -1,0 +1,207 @@
+{
+  "task": "TASK 14 STEP 2 - structured VAE v2 geometry check",
+  "val_file": "data\\val_full.json",
+  "num_examples": 500,
+  "label_distribution": [
+    132,
+    124,
+    124,
+    120
+  ],
+  "conventions": {
+    "ending_alone": "cos(mu(ctx), mu(ending)) - what src/eval/evaluate.py scores",
+    "ctx_plus_ending": "cos(mu(ctx), mu(ctx + ' ' + ending)) - TASK 2 training text"
+  },
+  "thresholds": {
+    "proceed": 0.38,
+    "try_smaller_margin": 0.37
+  },
+  "original_honest_no_navigation_5042": 0.2973026576755256,
+  "v1_references_same_500": {
+    "rank1": 0.36,
+    "gap_std": 0.3107
+  },
+  "models": {
+    "Original VAE": {
+      "checkpoint": "checkpoints\\vae.pt",
+      "margin": null,
+      "wrong_mode": null,
+      "best_epoch": null,
+      "ending_alone": {
+        "mean_cos_correct": 0.4901308185942471,
+        "mean_cos_wrong_all3": 0.42865710209620494,
+        "gap_all3": 0.061473716498042175,
+        "cos_correct_std": 0.18486521653856788,
+        "gap_std": 0.18178781883424042,
+        "rank_counts": {
+          "1": 188,
+          "2": 116,
+          "3": 118,
+          "4": 78
+        },
+        "rank_percentages": {
+          "rank_1": 37.6,
+          "rank_2": 23.2,
+          "rank_3": 23.6,
+          "rank_4": 15.6
+        },
+        "rank1_accuracy": 0.376,
+        "rank1_correct": 188,
+        "num_examples": 500
+      },
+      "ctx_plus_ending": {
+        "mean_cos_correct": 0.93231185901165,
+        "mean_cos_wrong_all3": 0.9186905843019485,
+        "gap_all3": 0.013621274709701536,
+        "cos_correct_std": 0.05511162666693996,
+        "gap_std": 0.04493689741773575,
+        "rank_counts": {
+          "1": 182,
+          "2": 121,
+          "3": 114,
+          "4": 83
+        },
+        "rank_percentages": {
+          "rank_1": 36.4,
+          "rank_2": 24.2,
+          "rank_3": 22.8,
+          "rank_4": 16.6
+        },
+        "rank1_accuracy": 0.364,
+        "rank1_correct": 182,
+        "num_examples": 500
+      },
+      "training_snapshot": {
+        "final_probe_gap": null,
+        "final_probe1_gap": null,
+        "final_probe_per_example_gap_std": null,
+        "final_probe_mean_cos_correct": null,
+        "final_probe_mean_cos_wrong": null
+      }
+    },
+    "Structured v1 (1x)": {
+      "checkpoint": "checkpoints\\vae_structured.pt",
+      "margin": 0.5,
+      "wrong_mode": null,
+      "best_epoch": 10,
+      "ending_alone": {
+        "mean_cos_correct": 0.3088012303989381,
+        "mean_cos_wrong_all3": 0.2057418261387696,
+        "gap_all3": 0.10305940426016849,
+        "cos_correct_std": 0.3019168166082471,
+        "gap_std": 0.31072157249953664,
+        "rank_counts": {
+          "1": 180,
+          "2": 128,
+          "3": 110,
+          "4": 82
+        },
+        "rank_percentages": {
+          "rank_1": 36.0,
+          "rank_2": 25.6,
+          "rank_3": 22.0,
+          "rank_4": 16.4
+        },
+        "rank1_accuracy": 0.36,
+        "rank1_correct": 180,
+        "num_examples": 500
+      },
+      "ctx_plus_ending": {
+        "mean_cos_correct": 0.8877656008154153,
+        "mean_cos_wrong_all3": 0.8677180831432343,
+        "gap_all3": 0.020047517672181048,
+        "cos_correct_std": 0.11296519699605469,
+        "gap_std": 0.09960837260809727,
+        "rank_counts": {
+          "1": 158,
+          "2": 146,
+          "3": 100,
+          "4": 96
+        },
+        "rank_percentages": {
+          "rank_1": 31.6,
+          "rank_2": 29.2,
+          "rank_3": 20.0,
+          "rank_4": 19.2
+        },
+        "rank1_accuracy": 0.316,
+        "rank1_correct": 158,
+        "num_examples": 500
+      },
+      "training_snapshot": {
+        "final_probe_gap": 0.32466810941696167,
+        "final_probe1_gap": null,
+        "final_probe_per_example_gap_std": null,
+        "final_probe_mean_cos_correct": 0.475818395614624,
+        "final_probe_mean_cos_wrong": 0.15115028619766235
+      }
+    },
+    "Structured v2 (3x)": {
+      "checkpoint": "checkpoints\\vae_structured_v2.pt",
+      "margin": 0.5,
+      "wrong_mode": "all",
+      "best_epoch": 10,
+      "ending_alone": {
+        "mean_cos_correct": 0.2864215334914625,
+        "mean_cos_wrong_all3": 0.18369959959263604,
+        "gap_all3": 0.10272193389882645,
+        "cos_correct_std": 0.30561824629331724,
+        "gap_std": 0.3347164519107182,
+        "rank_counts": {
+          "1": 189,
+          "2": 116,
+          "3": 112,
+          "4": 83
+        },
+        "rank_percentages": {
+          "rank_1": 37.8,
+          "rank_2": 23.2,
+          "rank_3": 22.4,
+          "rank_4": 16.6
+        },
+        "rank1_accuracy": 0.378,
+        "rank1_correct": 189,
+        "num_examples": 500
+      },
+      "ctx_plus_ending": {
+        "mean_cos_correct": 0.8739915393330157,
+        "mean_cos_wrong_all3": 0.8526425903886556,
+        "gap_all3": 0.021348948944360013,
+        "cos_correct_std": 0.1279026079851866,
+        "gap_std": 0.11524691861104355,
+        "rank_counts": {
+          "1": 164,
+          "2": 153,
+          "3": 95,
+          "4": 88
+        },
+        "rank_percentages": {
+          "rank_1": 32.8,
+          "rank_2": 30.6,
+          "rank_3": 19.0,
+          "rank_4": 17.6
+        },
+        "rank1_accuracy": 0.328,
+        "rank1_correct": 164,
+        "num_examples": 500
+      },
+      "training_snapshot": {
+        "final_probe_gap": 0.4018842875957489,
+        "final_probe1_gap": 0.40297892689704895,
+        "final_probe_per_example_gap_std": 0.23344580829143524,
+        "final_probe_mean_cos_correct": 0.5062033534049988,
+        "final_probe_mean_cos_wrong": 0.10431905835866928
+      }
+    }
+  },
+  "comparison": {
+    "target": "Structured v2 (3x)",
+    "original_rank1_same_set": 0.376,
+    "target_rank1": 0.378,
+    "delta_vs_original": 0.0020000000000000018,
+    "target_gap_std": 0.3347164519107182,
+    "gap_std_lower_than_v1": false,
+    "beats_original": true,
+    "decision": "BORDERLINE (37-38%): report and wait for confirmation"
+  }
+}

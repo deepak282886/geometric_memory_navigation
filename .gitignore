@@ -10,11 +10,61 @@ __pycache__/
 venv/
 
 # Large / regenerable artifacts (recreate via scripts/)
-data/
-checkpoints/
+# Root-anchored on purpose: V3 keeps *source* under environment/data/, so an
+# unanchored `data/` would ignore environment/data/loader.py too.
+/data/
+/checkpoints/
+/environment/data/arc/
+/environment/data/conceptnet/
+/environment/checkpoints/
+/environment/results/
+/environment/tokenizer/bpe_vocab.json
+/environment/data/wikitext/*.json
+/environment/data/wikitext/*.bin
+/environment/tokenizer/bpe_wiki_vocab.json
+/environment/checkpoints/gpt2_wiki*.pt
+/environment/checkpoints/gmn_wiki*.pt
 wandb/
 
 # OS / editor
 .DS_Store
 .idea/
 .vscode/
+# --- phase4 hygiene ---
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+node_modules/
+.ipynb_checkpoints/
+.dart_tool/
+*.log
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.blend1
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.zip
+*.tar
+*.gz
+checkpoints/
+finetuned_models*/
+unsloth_compiled_cache/
+*.csv
